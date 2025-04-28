@@ -6,9 +6,15 @@ import requests
 from ctfbridge import get_client
 
 
-def download_challenges(base_url, username, password, output_dir):
+def download_challenges(base_url, username, password, token, output_dir):
     client = get_client(base_url)
-    client.login(username, password)
+
+    if username and password:
+        client.login(username=username, password=password)
+    elif token:
+        client.login(token=token)
+    else:
+        raise ValueError("You must provide either both username and password, or a token to log in.")
 
     challenges = client.get_challenges()
 
@@ -47,13 +53,22 @@ def download_challenges(base_url, username, password, output_dir):
 def main():
     parser = argparse.ArgumentParser(description="Download all CTF challenges easily.")
     parser.add_argument("--url", required=True, help="Base URL of the CTF platform (e.g., https://demo.ctfd.io)")
-    parser.add_argument("--username", required=True, help="Username for login")
-    parser.add_argument("--password", required=True, help="Password for login")
+    parser.add_argument("--username", required=False, help="Username for login")
+    parser.add_argument("--password", required=False, help="Password for login")
+    parser.add_argument("--token", required=False, help="Token for login")
     parser.add_argument("--output", default="challenges", help="Output directory to save challenges")
 
     args = parser.parse_args()
 
-    download_challenges(args.url, args.username, args.password, args.output)
+    if args.token:
+        if args.username or args.password:
+            parser.error("Provide either --token or --username and --password, not both.")
+    elif args.username and args.password:
+        pass
+    else:
+        parser.error("You must provide either --token or both --username and --password.")
+
+    download_challenges(args.url, args.username, args.password, args.token, args.output)
 
 if __name__ == "__main__":
     main()
