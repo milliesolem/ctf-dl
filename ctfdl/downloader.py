@@ -1,7 +1,6 @@
 import logging
 import concurrent.futures
 import os
-from urllib.parse import unquote, urlparse
 
 from ctfdl.utils import makedirs, download_file
 from ctfdl.folder_structure import FolderStructureRenderer
@@ -39,7 +38,7 @@ def download_challenges(
         raise ValueError("Must provide either token or username/password to login.")
 
     # Fetch challenges
-    challenges = client.get_challenges()
+    challenges = client.challenges.get_all()
     logger.info("Fetched %d challenges from platform.", len(challenges))
 
     # Apply filters if any
@@ -89,24 +88,13 @@ def process_challenge(chal, writer, folder_renderer, output_dir, update, dry_run
 
     makedirs(chal_folder, dry_run=dry_run)
 
-    # Prepare attachments metadata
-    attachments = []
-    if hasattr(chal, "attachments") and chal.attachments:
-        for attachment_url in chal.attachments:
-            attachment_name = unquote(urlparse(attachment_url).path.split("/")[-1])
-            attachments.append({
-                "filename": attachment_name,
-                "path": attachment_name,
-                "url": attachment_url
-            })
-
     # Write README or challenge file
     challenge_data = {
         "name": chal.name,
         "category": chal.category,
         "value": chal.value,
         "description": chal.description,
-        "attachments": attachments,
+        "attachments": chal.attachments,
         "solved": getattr(chal, "solved", False)
     }
 
@@ -117,6 +105,6 @@ def process_challenge(chal, writer, folder_renderer, output_dir, update, dry_run
         attachments_dir = os.path.join(chal_folder, "files")
         makedirs(attachments_dir, dry_run=dry_run)
 
-        for attachment in attachments:
-            file_path = os.path.join(attachments_dir, attachment["filename"])
-            download_file(attachment["url"], file_path, dry_run=dry_run)
+        for attachment in chal.attachments:
+            file_path = os.path.join(attachments_dir, attachment.name)
+            download_file(attachment.url, file_path, dry_run=dry_run)

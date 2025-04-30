@@ -1,6 +1,6 @@
 [project]
 name = "ctf-dl"
-version = "0.1.5"
+version = "0.1.6"
 description = "Command-line tool to download CTF challenges"
 authors = [
   { name="bjornmorten", email="bjornmdev@proton.me" }
@@ -24,9 +24,8 @@ classifiers = [
 ]
 
 dependencies = [
-  "ctfbridge>=0.1.1",
+  "ctfbridge>=0.1.4",
 ]
-
 
 [project.urls]
 Homepage = "https://github.com/bjornmorten/ctf-dl/"
