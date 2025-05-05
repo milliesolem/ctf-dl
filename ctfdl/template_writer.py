@@ -15,7 +15,7 @@ class TemplateWriter:
         Initialize the template writer.
         """
         if template_path is None:
-            logger.info("No challenge template specified. Using default.")
+            logger.debug("No challenge template specified. Using default.")
             template_path = os.path.join(_DEFAULT_TEMPLATES_FOLDER, "default.md.jinja")
 
         if not template_path.endswith(".jinja"):
@@ -40,23 +40,20 @@ class TemplateWriter:
         # Inject useful filters
         self.env.filters["slugify"] = slugify
 
-    def write(self, challenge_data, output_folder, dry_run=False):
+    def write(self, challenge_data, output_folder):
         """
         Render the template and write the file to the given output folder.
 
         Args:
             challenge_data (dict): The challenge fields
             output_folder (str): Directory to save the output
-            dry_run (bool): Simulate writing
         """
         rendered = self.template.render(challenge=challenge_data)
 
         output_filename = self._guess_output_filename()
         output_path = os.path.join(output_folder, output_filename)
 
-        write_file(output_path, rendered, dry_run=dry_run)
-
-        logger.info("Rendered challenge to: %s", output_path)
+        write_file(output_path, rendered)
 
     def _guess_output_filename(self):
         """

@@ -12,7 +12,7 @@ _DEFAULT_FOLDER_TEMPLATES_FOLDER = os.path.join(os.path.dirname(__file__), "temp
 class FolderStructureRenderer:
     def __init__(self, template_path=None):
         if template_path is None:
-            logger.info("No folder structure template specified. Using default.")
+            logger.debug("No folder structure template specified. Using default.")
             template_path = os.path.join(_DEFAULT_FOLDER_TEMPLATES_FOLDER, "default.path.jinja")
 
         if not template_path.endswith(".jinja"):

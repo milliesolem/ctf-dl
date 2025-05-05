@@ -1,109 +1,148 @@
-import argparse
-import logging
-import sys
+import socket
+from pathlib import Path
+from typing import List, Optional
+
+import typer
+from ctfbridge.exceptions import UnknownPlatformError
+from requests.exceptions import ConnectionError, SSLError, Timeout
+from rich.console import Console
 
 from ctfdl.downloader import download_challenges
 from ctfdl.utils import list_available_templates
 
-logger = logging.getLogger("ctfdl")
+console = Console(log_path=False)
 
-def parse_arguments():
-    parser = argparse.ArgumentParser(
-        prog='ctf-dl',
-        description="Universal CTF Challenge Downloader",
-        formatter_class=argparse.RawTextHelpFormatter
-    )
+def main(
+    url: str = typer.Argument(..., help="Base URL of the CTF platform (e.g., https://demo.ctfd.io)"),
+    # Core Options
+    output: Path = typer.Option(
+        Path("challenges"), "-o", "--output",
+        exists=False, file_okay=False, dir_okay=True,
+        writable=True, resolve_path=True,
+        help="Output directory to save challenges"
+    ),
+    # Authentication Options (either token OR username/password)
+    token: Optional[str] = typer.Option(
+        None, "-t", "--token", hide_input=True,
+        help="Authentication token"
+    ),
+    username: Optional[str] = typer.Option(
+        None, "-u", "--username",
+        help="Username for login"
+    ),
+    password: Optional[str] = typer.Option(
+        None, "-p", "--password", hide_input=True,
+        help="Password for login"
+    ),
+    # Template Options
+    template: Optional[Path] = typer.Option(
+        None, "--template",
+        exists=True, file_okay=True, dir_okay=False,
+        resolve_path=True,
+        help="Path to output template"
+    ),
+    folder_template: Optional[Path] = typer.Option(
+        None, "--folder-template",
+        exists=True, file_okay=True, dir_okay=False,
+        resolve_path=True,
+        help="Path to folder structure template"
+    ),
+    # Filter Options
+    categories: Optional[List[str]] = typer.Option(
+        None, "--categories", help="Only download specified categories"
+    ),
+    min_points: Optional[int] = typer.Option(
+        None, "--min-points", help="Minimum points to download"
+    ),
+    max_points: Optional[int] = typer.Option(
+        None, "--max-points", help="Maximum points to download"
+    ),
+    solved: bool = typer.Option(
+        False, "--solved", help="Only download already solved challenges"
+    ),
+    unsolved: bool = typer.Option(
+        False, "--unsolved", help="Only download unsolved challenges"
+    ),
+    # Behavior Options
+    update: bool = typer.Option(
+        False, "--update", help="Skip challenges that already exist locally"
+    ),
+    no_attachments: bool = typer.Option(
+        False, "--no-attachments", help="Skip downloading attachments"
+    ),
+    parallel: int = typer.Option(
+        4, "--parallel", help="Number of parallel downloads"
+    ),
+    # Other Options
+    list_templates: bool = typer.Option(
+        False, "--list-templates", help="List available templates and exit"
+    ),
+):
+    """Download challenges from a CTF platform."""
+    console.rule(f"[bold blue]CTF Download: {url}")
 
-    # Login and core settings
-    parser.add_argument("-u", "--url", required=True, help="Base URL of the CTF platform (e.g., https://demo.ctfd.io)")
-    parser.add_argument("--username", help="Username for login")
-    parser.add_argument("--password", help="Password for login")
-    parser.add_argument("--token", help="Authentication token")
-    parser.add_argument("-o", "--output", default="challenges", help="Output directory to save challenges (default: challenges/)")
-
-    # Templates
-    parser.add_argument("--template", help="Path to output template (default: templates/default.md.jinja)")
-    parser.add_argument("--folder-template", help="Path to folder structure template (default: templates/folder_structure/default.path.jinja)")
-
-    # Filtering
-    parser.add_argument("--categories", nargs="+", help="Only download challenges from specified categories")
-    parser.add_argument("--min-points", type=int, help="Minimum points to download")
-    parser.add_argument("--max-points", type=int, help="Maximum points to download")
-
-    # Special behaviors
-    parser.add_argument("--update", action="store_true", help="Skip challenges that already exist locally")
-    parser.add_argument("--dry-run", action="store_true", help="Simulate download without saving files")
-    parser.add_argument("--no-attachments", action="store_true", help="Skip downloading attachments")
-    parser.add_argument("--parallel", type=int, default=4, help="Number of parallel downloads (default: 4)")
-
-    # Utilities
-    parser.add_argument("--list-templates", action="store_true", help="List available templates and exit")
-
-    # Verbosity
-    parser.add_argument("-v", "--verbose", action="count", default=0, help="Increase verbosity (-v, -vv)")
-    parser.add_argument("-q", "--quiet", action="store_true", help="Reduce output verbosity (show only warnings and errors)")
-
-    return parser.parse_args()
-
-def setup_logging(verbosity, quiet):
-    handler = logging.StreamHandler(sys.stdout)
-    formatter = logging.Formatter("%(levelname)s - %(message)s")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-
-    if quiet:
-        logger.setLevel(logging.WARNING)
-    elif verbosity == 0:
-        logger.setLevel(logging.INFO)
-    elif verbosity >= 1:
-        logger.setLevel(logging.DEBUG)
-
-def main():
-    args = parse_arguments()
-
-    setup_logging(args.verbose, args.quiet)
-
-    if args.list_templates:
+    # List templates
+    if list_templates:
         list_available_templates()
-        sys.exit(0)
+        raise typer.Exit()
 
-    # TODO: load config
+    # Credential enforcement
+    if token and (username or password):
+        console.print(
+            "[red]Error:[/] Provide either token OR username/password, not both.",
+            style="bold red"
+        )
+        raise typer.Exit(code=1)
+    if not token and not (username and password):
+        console.print(
+            "[red]Error:[/] You must provide either a token OR both username and password.",
+            style="bold red"
+        )
+        raise typer.Exit(code=1)
 
-    # Validate login options
-    if args.token:
-        if args.username or args.password:
-            logger.error("Provide either --token or --username and --password, not both.")
-            sys.exit(1)
-    elif args.username and args.password:
-        pass
+    if solved:
+        solved_filter = True
+    elif unsolved:
+        solved_filter = False
     else:
-        logger.error("You must provide either --token or --username and --password.")
-        sys.exit(1)
+        solved_filter = None
 
-    logger.info("Starting CTF download from %s", args.url)
+    try:
+        if download_challenges(
+            url=url,
+            username=username,
+            password=password,
+            token=token,
+            output_dir=str(output),
+            template_path=str(template) if template else None,
+            folder_template_path=str(folder_template) if folder_template else None,
+            categories=categories,
+            min_points=min_points,
+            max_points=max_points,
+            solved=solved_filter,
+            update=update,
+            no_attachments=no_attachments,
+            parallel=parallel,
+        ):
+            console.print("[bold green]All challenges downloaded successfully![/]")
+    except SSLError:
+        console.print("[bold red]SSL error. The server's certificate might be invalid or misconfigured.[/]")
+        raise typer.Exit(code=1)
+    except ConnectionError as e:
+        if isinstance(e.__cause__, socket.gaierror):
+            console.print("[bold red]Could not resolve the hostname. Please check the URL.[/]")
+        else:
+            console.print("[bold red]Failed to connect to the server. It might be down or unreachable.[/]")
+        raise typer.Exit(code=1)
+    except Timeout:
+        console.print("[bold red]The request timed out. Try again later or check your connection.[/]")
+        raise typer.Exit(code=1)
+    except UnknownPlatformError:
+        console.print("[bold red]Platform not supported[/]")
+    except Exception as e:
+        console.print(f"[bold red]An unexpected error occurred:[/] {e}")
+        raise typer.Exit(code=1)
 
-    download_challenges(
-        url=args.url,
-        username=args.username,
-        password=args.password,
-        token=args.token,
-        output_dir=args.output,
-        template_path=args.template,
-        folder_template_path=args.folder_template,
-        categories=args.categories,
-        min_points=args.min_points,
-        max_points=args.max_points,
-        update=args.update,
-        dry_run=args.dry_run,
-        no_attachments=args.no_attachments,
-        parallel=args.parallel
-    )
-
-    # TODO: optional scoreboard download
-
-    # TODO: save config
-
-    logger.info("All done!")
 
 if __name__ == "__main__":
-    main()
+    typer.run(main)

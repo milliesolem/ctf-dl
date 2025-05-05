@@ -17,37 +17,18 @@ def slugify(text):
     text = text.strip("-")
     return text
 
-def makedirs(path, dry_run=False):
+def makedirs(path):
     """
-    Create directories safely, supporting dry-run mode.
+    Create directories
     """
-    if dry_run:
-        logger.info("[Dry-Run] Would create directory: %s", path)
-    else:
-        os.makedirs(path, exist_ok=True)
+    os.makedirs(path, exist_ok=True)
 
-def write_file(filepath, content, dry_run=False):
+def write_file(filepath, content):
     """
-    Write a file safely, supporting dry-run mode.
+    Write a file
     """
-    if dry_run:
-        logger.info("[Dry-Run] Would write file: %s", filepath)
-    else:
-        with open(filepath, "w", encoding="utf-8") as f:
-            f.write(content)
-
-def download_file(url, output_path, dry_run=False):
-    """
-    Download a file safely, supporting dry-run mode.
-    """
-    if dry_run:
-        logger.info("[Dry-Run] Would download file from %s to %s", url, output_path)
-    else:
-        import requests
-        r = requests.get(url)
-        r.raise_for_status()
-        with open(output_path, "wb") as f:
-            f.write(r.content)
+    with open(filepath, "w", encoding="utf-8") as f:
+        f.write(content)
 
 def list_available_templates():
     """
@@ -71,13 +52,3 @@ def list_available_templates():
                 print(f"- {logical_name}")
 
     print()
-
-def format_size(bytes_size):
-    """
-    Format a byte value into a human-readable format (e.g., KB, MB, GB).
-    """
-    for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
-        if bytes_size < 1024:
-            return f"{bytes_size:.2f}{unit}"
-        bytes_size /= 1024
-    return f"{bytes_size:.2f}PB"

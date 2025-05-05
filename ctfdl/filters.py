@@ -2,7 +2,7 @@ import logging
 
 logger = logging.getLogger("ctfdl.filters")
 
-def apply_filters(challenges, categories=None, min_points=None, max_points=None):
+def apply_filters(challenges, categories=None, min_points=None, max_points=None, solved=None):
     """
     Apply filtering based on categories and points.
 
@@ -19,13 +19,13 @@ def apply_filters(challenges, categories=None, min_points=None, max_points=None)
     filtered = []
 
     for chal in challenges:
-        if not challenge_passes_filters(chal, categories, min_points, max_points):
+        if not challenge_passes_filters(chal, categories, min_points, max_points, solved):
             continue
         filtered.append(chal)
 
     return filtered
 
-def challenge_passes_filters(chal, categories, min_points, max_points):
+def challenge_passes_filters(chal, categories, min_points, max_points, solved):
     """
     Check if a single challenge passes all active filters.
     """
@@ -46,5 +46,11 @@ def challenge_passes_filters(chal, categories, min_points, max_points):
         if chal.value is None or chal.value > max_points:
             logger.debug("Challenge %s skipped due to max points filter", chal.name)
             return False
+
+    if solved is True and not chal.solved:
+        return False
+
+    if solved is False and chal.solved:
+        return False
 
     return True
