@@ -2,7 +2,8 @@
 
 ctf-dl is a fast and simple command-line tool for downloading CTF challenges, with support for multiple platforms.
 
-⚠️ This project is still in development ⚠️
+> [!WARNING]
+> This project is still in development
 
 ## Features
 
