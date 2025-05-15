@@ -48,7 +48,7 @@ async def download_challenges(
         categories=categories,
         min_points=min_points,
         max_points=max_points,
-        solved=solved
+        solved=solved,
     )
     if not challenges:
         console.print("[bold red]There are no challenges to download...[/]")
@@ -74,7 +74,14 @@ async def download_challenges(
         main_task = progress.add_task("Downloading challenges...", total=len(tasks))
 
         async def worker(
-            chal, writer, folder_renderer, out_dir, update, no_attachments, progress, main_task
+            chal,
+            writer,
+            folder_renderer,
+            out_dir,
+            update,
+            no_attachments,
+            progress,
+            main_task,
         ):
             try:
                 await process_challenge(
@@ -94,7 +101,16 @@ async def download_challenges(
 
         # Prepare list of tasks
         tasks_to_run = [
-            worker(chal, writer, folder_renderer, out_dir, update, no_attachments, progress, main_task)
+            worker(
+                chal,
+                writer,
+                folder_renderer,
+                out_dir,
+                update,
+                no_attachments,
+                progress,
+                main_task,
+            )
             for chal, writer, folder_renderer, out_dir, update, no_attachments in tasks
         ]
 

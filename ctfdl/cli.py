@@ -168,9 +168,7 @@ def main(
     no_attachments: bool = typer.Option(
         False, "--no-attachments", help="Skip downloading attachments"
     ),
-    parallel: int = typer.Option(
-        30, "--parallel", help="Number of parallel downloads"
-    ),
+    parallel: int = typer.Option(30, "--parallel", help="Number of parallel downloads"),
     list_templates: bool = typer.Option(
         False, "--list-templates", help="List available templates and exit"
     ),
