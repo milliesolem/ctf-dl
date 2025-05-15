@@ -4,6 +4,7 @@ import re
 
 logger = logging.getLogger("ctfdl")
 
+
 def slugify(text):
     """
     Turn a string into a safe folder/file name.
@@ -17,11 +18,13 @@ def slugify(text):
     text = text.strip("-")
     return text
 
+
 def makedirs(path):
     """
     Create directories
     """
     os.makedirs(path, exist_ok=True)
+
 
 def write_file(filepath, content):
     """
@@ -29,6 +32,7 @@ def write_file(filepath, content):
     """
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(content)
+
 
 def list_available_templates():
     """

@@ -7,13 +7,18 @@ from .utils import slugify
 
 logger = logging.getLogger("ctfdl.folder_structure")
 
-_DEFAULT_FOLDER_TEMPLATES_FOLDER = os.path.join(os.path.dirname(__file__), "templates", "folder_structure")
+_DEFAULT_FOLDER_TEMPLATES_FOLDER = os.path.join(
+    os.path.dirname(__file__), "templates", "folder_structure"
+)
+
 
 class FolderStructureRenderer:
     def __init__(self, template_path=None):
         if template_path is None:
             logger.debug("No folder structure template specified. Using default.")
-            template_path = os.path.join(_DEFAULT_FOLDER_TEMPLATES_FOLDER, "default.path.jinja")
+            template_path = os.path.join(
+                _DEFAULT_FOLDER_TEMPLATES_FOLDER, "default.path.jinja"
+            )
 
         if not template_path.endswith(".jinja"):
             template_path += ".jinja"
@@ -41,7 +46,7 @@ class FolderStructureRenderer:
             "challenge": {
                 "name": challenge_data.name,
                 "category": challenge_data.category,
-                "value": challenge_data.value
+                "value": challenge_data.value,
             }
         }
         result = self.template.render(context)

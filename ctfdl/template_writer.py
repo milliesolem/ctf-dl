@@ -9,6 +9,7 @@ logger = logging.getLogger("ctfdl.template_writer")
 
 _DEFAULT_TEMPLATES_FOLDER = os.path.join(os.path.dirname(__file__), "templates")
 
+
 class TemplateWriter:
     def __init__(self, template_path=None):
         """
@@ -35,7 +36,7 @@ class TemplateWriter:
         self.template = self.env.get_template(template_name)
 
         logger.debug("Loaded challenge template: %s", template_path)
-        self.template_extension = os.path.splitext(template_name)[0].split('.')[-1]
+        self.template_extension = os.path.splitext(template_name)[0].split(".")[-1]
 
         # Inject useful filters
         self.env.filters["slugify"] = slugify

@@ -10,7 +10,7 @@
 {%- if challenge.attachments %}
 ## Attachments
 {%- for attachment in challenge.attachments %}
-- [{{ attachment.filename }}](files/{{ attachment.filename }})
+- [{{ attachment.name }}](files/{{ attachment.name }})
 {%- endfor %}
 {%- endif %}
 
