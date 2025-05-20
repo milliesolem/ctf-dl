@@ -1,6 +1,6 @@
 [project]
 name = "ctf-dl"
-version = "0.1.7"
+version = "0.1.8"
 description = "Command-line tool to download CTF challenges"
 authors = [
   { name="bjornmorten", email="bjornmdev@proton.me" }
@@ -34,4 +34,4 @@ include-package-data = true
 "ctfdl" = ["templates/**"]
 
 [project.scripts]
-ctf-dl = "ctfdl.cli:main"
+ctf-dl = "ctfdl.cli:app"
