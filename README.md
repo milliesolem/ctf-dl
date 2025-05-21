@@ -1,72 +1,133 @@
-# ctf-dl
+# 🛠️ ctf-dl
 
-ctf-dl is a fast and simple command-line tool for downloading CTF challenges, with support for multiple platforms.
+**ctf-dl** is a fast and flexible command-line tool for downloading CTF challenges from various platforms. It supports authentication, filtering and custom templates.
 
 > [!WARNING]
 > This project is still in development
 
-## Features
+## 🚀 Quickstart
 
-- Download **all challenges** (descriptions, attachments, points, categories) from a CTF platform
-- Works with multiple CTF platforms (via [ctfbridge](https://github.com/bjornmorten/ctfbridge/))
-- Supports **dry-run** mode to preview downloads without saving
-- **Update mode** to only pull new challenges without redownloading everything
-- **Filters**:
-  - By category (e.g., Web, Crypto)
-  - By minimum/maximum points
-- Customizable **Jinja2 templates** for easy formatting
-- Save challenge data into **custom templates** (Markdown, JSON, plain text, etc.)
-- Organize challenges into **custom folder structures**
+```bash
+ctf-dl https://demo.ctfd.io --token YOUR_TOKEN
+```
 
-## Installation
+---
+
+## 🔧 Features
+
+- 🔽 Download **all challenges**: descriptions, files, points, and categories
+- 🔁 **Update mode**: only fetch new challenges
+- 🧪 **Dry-run mode**: preview output without saving
+- 🗂️ Organize challenges with **custom folder structures**
+- 🧩 Format output using **custom Jinja2 templates** (Markdown, JSON, etc.)
+- 🎯 Apply filters: by category, point range, solved status
+- 🔐 Works across platforms via [ctfbridge](https://github.com/bjornmorten/ctfbridge)
+
+---
+
+## 📦 Installation
+
+Install via pip:
 
 ```bash
 pip install ctf-dl
 ```
 
-## Usage
+---
 
-To get a list of all options and switches use:
-
-```bash
-ctf-dl -h
-```
-
-## Examples
-
-Download all challenges:
+## 🧪 CLI Usage
 
 ```bash
-ctf-dl --url https://demo.ctfd.io --username admin --password password
+ctf-dl [OPTIONS] URL
 ```
 
-Download all challenges to `/tmp/ctf`:
+**Required argument**:
+
+| Argument | Description |
+|----------|-------------|
+| `URL`    | Base URL of the CTF platform (e.g., `https://demo.ctfd.io`) |
+
+---
+
+### 📁 Output Options
+
+| Option               | Description                                 | Default        |
+|----------------------|---------------------------------------------|----------------|
+| `-o`, `--output`     | Output directory to save challenges         | `challenges`   |
+| `--template`         | Path to custom challenge template (Jinja2)  | —              |
+| `--folder-template`  | Path to folder structure template (Jinja2)  | —              |
+| `--zip`              | Compress the output folder into a `.zip`    | —              |
+
+---
+
+### 🔐 Authentication
+
+| Option             | Description             |
+|--------------------|-------------------------|
+| `-t`, `--token`    | Authentication token    |
+| `-u`, `--username` | Username for login      |
+| `-p`, `--password` | Password for login      |
+| `--cookie`         | Cookie for authentication |
+
+> ⚠️ Provide either a token **or** username/password, not both.
+
+---
+
+### 🔎 Filters
+
+| Option             | Description                                 |
+|--------------------|---------------------------------------------|
+| `--categories`     | Download only specific categories (e.g. `Web`, `Crypto`) |
+| `--min-points`     | Minimum challenge point value               |
+| `--max-points`     | Maximum challenge point value               |
+| `--solved`         | Download only solved challenges             |
+| `--unsolved`       | Download only unsolved challenges           |
+
+---
+
+### ⚙️ Behavior
+
+| Option              | Description                                         | Default |
+|---------------------|-----------------------------------------------------|---------|
+| `--update`          | Skip already downloaded challenges                 | `False` |
+| `--no-attachments`  | Do not download challenge attachments              | `False` |
+| `--parallel`        | Number of parallel downloads                       | `30`    |
+| `--list-templates`  | List available templates and exit                  | —       |
+
+---
+
+### 🆘 Help
+
+| Option     | Description                 |
+|------------|-----------------------------|
+| `-h`, `--help` | Show the help message and exit |
+
+---
+
+## 💡 Examples
 
 ```bash
-ctf-dl --url https://demo.ctfd.io --token YOUR_TOKEN --output /tmp/ctf
+# Download all challenges
+ctf-dl https://demo.ctfd.io --token YOUR_TOKEN
+
+# Download to a custom directory
+ctf-dl https://demo.ctfd.io --token YOUR_TOKEN --output /tmp/ctf
+
+# Only download Web and Crypto challenges
+ctf-dl https://demo.ctfd.io --token YOUR_TOKEN --categories Web Crypto
+
+# Update only new challenges
+ctf-dl https://demo.ctfd.io --token YOUR_TOKEN --update
+
+# Download and zip output
+ctf-dl https://demo.ctfd.io --token YOUR_TOKEN --zip
 ```
 
-Download only Web and Crypto challenges:
+---
 
-```bash
-ctf-dl --url https://ctf.example.com --token YOUR_TOKEN --categories Web Crypto
-```
+## 📁 Default Output Structure
 
-Dry-run (simulate without writing files):
-
-```bash
-ctf-dl --url https://ctf.example.com --token YOUR_TOKEN --dry-run
-```
-
-Update only new challenges:
-
-```bash
-ctf-dl --url https://ctf.example.com --token YOUR_TOKEN --update
-```
-
-## Default Output Structure
-
-```
+```text
 challenges/
 ├── crypto/
 │   ├── rsa-beginner/
@@ -81,6 +142,8 @@ challenges/
 │   │       └── app.py
 ```
 
-## License
+---
 
-MIT License © 2025 bjornmorten
+## 🪪 License
+
+MIT License © 2025 [bjornmorten](https://github.com/bjornmorten)
