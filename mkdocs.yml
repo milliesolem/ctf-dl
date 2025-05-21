@@ -1,0 +1,16 @@
+site_name: ctf-dl
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.sections
+    - navigation.top
+repo_url: https://github.com/bjornmorten/ctf-dl
+repo_name: ctf-dl
+
+nav:
+  - Home: index.md
+  - Usage Guide: usage.md
+
+plugins:
+  - search
