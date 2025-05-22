@@ -1,16 +1,25 @@
 import logging
 
+from rich.console import Console
 
-def setup_logging(log_file: str = "ctfdl-debug.log"):
-    logger = logging.getLogger("ctfdl")
-    logger.setLevel(logging.DEBUG)
 
-    file_handler = logging.FileHandler(log_file, mode="w", encoding="utf-8")
-    file_handler.setLevel(logging.DEBUG)
-    file_handler.setFormatter(
-        logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+def setup_logging_with_rich(debug: bool = False):
+    import sys
+
+    from rich.logging import RichHandler
+
+    level = logging.DEBUG if debug else logging.WARNING
+
+    logging.basicConfig(
+        level=level,
+        format="%(message)s",
+        datefmt="[%X]",
+        handlers=[
+            RichHandler(
+                rich_tracebacks=True,
+                markup=True,
+                console=Console(file=sys.stderr),
+            )
+        ],
     )
-    logger.addHandler(file_handler)
-
-    logger.propagate = False
-    return logger
+    logging.getLogger("ctfdl").setLevel(level)

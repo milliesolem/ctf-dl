@@ -1,6 +1,7 @@
-import yaml
-from pathlib import Path
 import re
+from pathlib import Path
+
+import yaml
 
 
 def parse_template_metadata(template_path: Path) -> dict:

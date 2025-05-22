@@ -1,9 +1,10 @@
 from pathlib import Path
-from jinja2 import Environment, TemplateNotFound
+from typing import List
+
 import yaml
+from jinja2 import Environment, TemplateNotFound
 from rich.console import Console
 from rich.table import Table
-from typing import List
 
 from ctfdl.templating.metadata_loader import parse_template_metadata
 

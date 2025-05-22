@@ -1,17 +1,15 @@
-from pathlib import Path
 import asyncio
 import os
+from pathlib import Path
+
 from rich.console import Console
-from rich.progress import (
-    BarColumn,
-    Progress,
-    SpinnerColumn,
-    TextColumn,
-    TimeElapsedColumn,
-)
-from ctfdl.templating.engine import TemplateEngine
-from ctfdl.core.client import get_authenticated_client
+from rich.progress import (BarColumn, Progress, SpinnerColumn, TextColumn,
+                           TimeElapsedColumn)
+
 import ctfdl.utils.console as console
+from ctfdl.core.client import get_authenticated_client
+from ctfdl.templating.context import TemplateEngineContext
+from ctfdl.templating.engine import TemplateEngine
 
 
 async def download_challenges(
@@ -30,6 +28,7 @@ async def download_challenges(
     no_attachments=False,
     solved=None,
     parallel=4,
+    debug=False,
 ):
     console.connecting(url)
     client = await get_authenticated_client(url, username, password, token)
@@ -45,10 +44,7 @@ async def download_challenges(
         return False, []
     console.challenges_found(len(challenges))
 
-    template_engine = TemplateEngine(
-        user_template_dir=Path(template_dir) if template_dir else None,
-        builtin_template_dir=Path(__file__).parent.parent / "templates",
-    )
+    template_engine = TemplateEngineContext.get()
 
     out_dir = Path(output_dir)
     os.makedirs(out_dir, exist_ok=True)
@@ -78,6 +74,7 @@ async def download_challenges(
         BarColumn(),
         TimeElapsedColumn(),
         console=console.console,
+        disable=debug,
     ) as progress:
         main_task = progress.add_task(
             "Downloading challenges...", total=len(challenges)

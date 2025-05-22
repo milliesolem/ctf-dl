@@ -1,5 +1,6 @@
 from pathlib import Path
-from typing import Optional, List
+from typing import List, Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -32,3 +33,4 @@ class ExportConfig(BaseModel):
     parallel: int = 30
     list_templates: bool = False
     zip_output: bool = False
+    debug: bool = False

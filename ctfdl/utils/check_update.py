@@ -1,5 +1,6 @@
+from importlib.metadata import PackageNotFoundError, version
+
 import httpx
-from importlib.metadata import version, PackageNotFoundError
 from rich.console import Console
 
 console = Console()

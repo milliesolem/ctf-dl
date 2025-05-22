@@ -1,13 +1,17 @@
 from pathlib import Path
-from jinja2 import Environment, FileSystemLoader, ChoiceLoader
+
+from jinja2 import ChoiceLoader, Environment, FileSystemLoader
+
+from ctfdl.templating.inspector import (list_available_templates,
+                                        validate_template_dir)
+from ctfdl.templating.renderers import (ChallengeRenderer, FolderRenderer,
+                                        IndexRenderer)
 from ctfdl.templating.variant_loader import VariantLoader
-from ctfdl.templating.renderers import ChallengeRenderer, FolderRenderer, IndexRenderer
-from ctfdl.templating.inspector import validate_template_dir, list_available_templates
 from ctfdl.utils.slugify import slugify
 
 
 class TemplateEngine:
-    def __init__(self, user_template_dir: Path, builtin_template_dir: Path):
+    def __init__(self, user_template_dir: Path | None, builtin_template_dir: Path):
         self.user_template_dir = user_template_dir
         self.builtin_template_dir = builtin_template_dir
 

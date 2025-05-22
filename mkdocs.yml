@@ -11,6 +11,7 @@ repo_name: ctf-dl
 nav:
   - Home: index.md
   - Usage Guide: usage.md
+  - Templates: templates.md
 
 plugins:
   - search
