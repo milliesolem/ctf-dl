@@ -1,38 +1,4 @@
-import logging
 import os
-import re
-
-logger = logging.getLogger("ctfdl")
-
-
-def slugify(text):
-    """
-    Turn a string into a safe folder/file name.
-    - Lowercase
-    - Replace spaces with hyphens
-    - Remove unsafe characters
-    """
-    text = text.lower()
-    text = re.sub(r"[^\w\s-]", "", text)
-    text = re.sub(r"[\s]+", "-", text)
-    text = text.strip("-")
-    return text
-
-
-def makedirs(path):
-    """
-    Create directories
-    """
-    os.makedirs(path, exist_ok=True)
-
-
-def write_file(filepath, content):
-    """
-    Write a file
-    """
-    with open(filepath, "w", encoding="utf-8") as f:
-        f.write(content)
-
 
 def list_available_templates():
     """

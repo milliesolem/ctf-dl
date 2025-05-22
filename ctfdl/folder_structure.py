@@ -3,7 +3,7 @@ import os
 
 from jinja2 import Environment, FileSystemLoader
 
-from .utils import slugify
+from ctfdl.utils.slugify import slugify
 
 logger = logging.getLogger("ctfdl.folder_structure")
 

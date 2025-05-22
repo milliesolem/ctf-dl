@@ -1,5 +1,6 @@
 from pathlib import Path
 import asyncio
+import os
 
 from ctfbridge import create_client
 from rich.console import Console
@@ -13,7 +14,6 @@ from rich.progress import (
 
 from ctfdl.folder_structure import FolderStructureRenderer
 from ctfdl.template_writer import TemplateWriter
-from ctfdl.utils import makedirs
 
 console = Console(log_path=False, log_time=False)
 
@@ -34,7 +34,7 @@ async def download_challenges(
     solved=None,
     parallel=4,
 ):
-    console.print(f"Connecting to CTF platform: {url}")
+    console.print(f"🛰️ Connecting to CTF platform: [cyan]{url}[/]")
     client = await create_client(url)
     if username and password:
         await client.auth.login(username=username, password=password)
@@ -43,7 +43,6 @@ async def download_challenges(
     else:
         raise ValueError("Must provide either token or username/password to login.")
 
-    console.print("Fetching challenges...")
     challenges = await client.challenges.get_all(
         categories=categories,
         min_points=min_points,
@@ -53,12 +52,12 @@ async def download_challenges(
     if not challenges:
         console.print("[bold red]There are no challenges to download...[/]")
         return False
-    console.print(f"{len(challenges)} challenges to download.")
+    console.print(f"📦 Found [bold]{len(challenges)} challenges[/] to download:\n")
 
     writer = TemplateWriter(template_path)
     folder_renderer = FolderStructureRenderer(folder_template_path)
     out_dir = Path(output_dir)
-    makedirs(out_dir)
+    os.makedirs(out_dir, exist_ok=True)
     tasks = [
         (chal, writer, folder_renderer, out_dir, update, no_attachments)
         for chal in challenges
@@ -93,7 +92,7 @@ async def download_challenges(
                     update,
                     no_attachments,
                 )
-                progress.console.log(f"Downloaded challenge: {chal.name}")
+                console.print(f"✅ Downloaded: [green]{chal.name}[/] ([cyan]{chal.category}[/])")
             except Exception as e:
                 progress.console.log(f"[bold red]ERROR:[/] Failed {chal.name}: {e}")
             finally:
@@ -137,7 +136,7 @@ async def process_challenge(
     chal_folder = output_dir / rel
     if update and chal_folder.exists():
         return
-    makedirs(chal_folder)
+    os.makedirs(chal_folder, exist_ok=True)
     data = {
         "name": chal.name,
         "category": chal.category,

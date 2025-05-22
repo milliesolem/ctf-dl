@@ -3,7 +3,7 @@ import os
 
 from jinja2 import Environment, FileSystemLoader
 
-from ctfdl.utils import slugify, write_file
+from ctfdl.utils.slugify import slugify
 
 logger = logging.getLogger("ctfdl.template_writer")
 
@@ -54,7 +54,8 @@ class TemplateWriter:
         output_filename = self._guess_output_filename()
         output_path = os.path.join(output_folder, output_filename)
 
-        write_file(output_path, rendered)
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(rendered)                                                                                                                                      
 
     def _guess_output_filename(self):
         """
