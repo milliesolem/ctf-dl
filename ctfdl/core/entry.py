@@ -34,24 +34,7 @@ async def run_export(config: ExportConfig):
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    success, index_data = await download_challenges(
-        url=config.url,
-        username=config.username,
-        password=config.password,
-        token=config.token,
-        output_dir=output_dir,
-        template_dir=str(config.template_dir) if config.template_dir else None,
-        variant_name=config.variant_name,
-        folder_template_name=config.folder_template_name,
-        categories=config.categories,
-        min_points=config.min_points,
-        max_points=config.max_points,
-        solved=solved_filter,
-        update=config.update,
-        no_attachments=config.no_attachments,
-        parallel=config.parallel,
-        debug=config.debug,
-    )
+    success, index_data = await download_challenges(config)
 
     if success:
         console.print("🎉 [bold green]All challenges downloaded successfully![/]")

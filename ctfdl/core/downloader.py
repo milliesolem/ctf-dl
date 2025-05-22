@@ -2,84 +2,77 @@ import asyncio
 import os
 from pathlib import Path
 
-from rich.console import Console
-from rich.progress import (BarColumn, Progress, SpinnerColumn, TextColumn,
-                           TimeElapsedColumn)
-
 import ctfdl.utils.console as console
 from ctfdl.core.client import get_authenticated_client
 from ctfdl.templating.context import TemplateEngineContext
-from ctfdl.templating.engine import TemplateEngine
+from ctfdl.models.config import ExportConfig
 
 
-async def download_challenges(
-    url,
-    username,
-    password,
-    token,
-    output_dir,
-    template_dir=None,
-    variant_name="default",
-    folder_template_name="default",
-    categories=None,
-    min_points=None,
-    max_points=None,
-    update=False,
-    no_attachments=False,
-    solved=None,
-    parallel=4,
-    debug=False,
-):
-    console.connecting(url)
-    client = await get_authenticated_client(url, username, password, token)
+async def download_challenges(config: ExportConfig) -> tuple[bool, list]:
+    console.connecting(config.url)
+    client = await get_authenticated_client(
+        config.url, config.username, config.password, config.token
+    )
 
     challenges = await client.challenges.get_all(
-        categories=categories,
-        min_points=min_points,
-        max_points=max_points,
-        solved=solved,
+        categories=config.categories,
+        min_points=config.min_points,
+        max_points=config.max_points,
+        solved=True if config.solved else False if config.unsolved else None,
     )
+
     if not challenges:
         console.no_challenges_found()
         return False, []
+
     console.challenges_found(len(challenges))
 
     template_engine = TemplateEngineContext.get()
-
-    out_dir = Path(output_dir)
-    os.makedirs(out_dir, exist_ok=True)
+    output_dir = config.output
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     all_challenges_data = []
 
     async def process(chal):
         try:
             await process_challenge(
-                client,
-                chal,
-                template_engine,
-                variant_name,
-                folder_template_name,
-                out_dir,
-                update,
-                no_attachments,
-                all_challenges_data,
+                client=client,
+                chal=chal,
+                template_engine=template_engine,
+                variant_name=config.variant_name,
+                folder_template_name=config.folder_template_name,
+                output_dir=output_dir,
+                update=config.update,
+                no_attachments=config.no_attachments,
+                all_challenges_data=all_challenges_data,
             )
             console.downloaded_challenge(chal.name, chal.category)
         except Exception as e:
             console.failed_challenge(chal.name, str(e))
+
+    from rich.progress import (
+        Progress,
+        SpinnerColumn,
+        TextColumn,
+        BarColumn,
+        TimeElapsedColumn,
+    )
+
+    from rich.console import Console as RichConsole
+    progress_console = RichConsole()
 
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
         BarColumn(),
         TimeElapsedColumn(),
-        console=console.console,
-        disable=debug,
+        console=progress_console,
+        disable=config.debug,
     ) as progress:
         main_task = progress.add_task(
             "Downloading challenges...", total=len(challenges)
         )
-        sem = asyncio.Semaphore(parallel)
+        sem = asyncio.Semaphore(config.parallel)
 
         async def worker(chal):
             async with sem:
@@ -90,6 +83,7 @@ async def download_challenges(
         progress.remove_task(main_task)
 
     return True, all_challenges_data
+
 
 
 async def process_challenge(
