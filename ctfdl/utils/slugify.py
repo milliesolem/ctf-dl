@@ -1,5 +1,6 @@
 import re
 
+
 def slugify(text):
     """
     Turn a string into a safe folder/file name.

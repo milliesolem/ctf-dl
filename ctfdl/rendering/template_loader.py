@@ -1,5 +1,6 @@
 import os
 
+
 def list_available_templates():
     """
     Print available templates (folder structure and challenge output).

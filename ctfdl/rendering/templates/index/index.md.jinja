@@ -1,0 +1,8 @@
+# 📘 Challenge Index
+
+| Category | Name | Points | Solved | Path |
+|------|----------|--------|--------|------|
+
+{%- for c in challenges %}
+| {{ c.category }} | {{ c.name }} | {{ c.value }} | {{ "✅" if c.solved else "❌" }} | [Link]({{ c.path }}) |
+{%- endfor %}

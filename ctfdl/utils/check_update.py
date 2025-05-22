@@ -4,6 +4,7 @@ from rich.console import Console
 
 console = Console()
 
+
 def check_updates():
     packages_to_check = ["ctf-dl", "ctfbridge"]
     outdated = []
@@ -29,7 +30,9 @@ def check_updates():
             return
 
         if installed != latest:
-            console.print(f"📦 [yellow]{pkg}[/]: update available → [red]{installed}[/] → [green]{latest}[/]")
+            console.print(
+                f"📦 [yellow]{pkg}[/]: update available → [red]{installed}[/] → [green]{latest}[/]"
+            )
             outdated.append(pkg)
         else:
             console.print(f"✅ {pkg} is up to date ([green]{installed}[/])")
@@ -43,4 +46,3 @@ def check_updates():
         console.print(f"\n🚀 To upgrade, run:\n[bold]{upgrade_cmd}[/bold]")
     else:
         console.print("\n🎉 All packages are up to date.")
-
