@@ -1,0 +1,23 @@
+# {{ challenge.name }}
+
+**Category:** {{ challenge.category }}
+**Points:** {{ challenge.value }}
+**Solved:** {{ "✅ Yes" if challenge.solved else "❌ No" }}
+
+---
+
+## Description
+
+{{ challenge.description }}
+
+---
+
+## Attachments
+
+{% if challenge.attachments %}
+{% for attachment in challenge.attachments %}
+- [{{ attachment.name }}](files/{{ attachment.name }})
+{% endfor %}
+{% else %}
+_No attachments_
+{% endif %}

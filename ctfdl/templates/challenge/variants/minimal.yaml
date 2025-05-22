@@ -1,0 +1,5 @@
+name: minimal
+description: Simple template with only a README file for quick overview.
+components:
+  - file: README.md
+    template: readme.jinja

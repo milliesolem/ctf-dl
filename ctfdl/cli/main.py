@@ -18,6 +18,25 @@ app = typer.Typer(
     },
 )
 
+output_format_map = {
+    "json": {
+        "variant_name": "json",
+        "index_template_name": "json",
+        "folder_template_name": "flat",
+    },
+    "markdown": {
+        "variant_name": "default",
+        "index_template_name": "grouped",
+        "folder_template_name": "default",
+    },
+    "minimal": {
+        "variant_name": "minimal",
+        "index_template_name": "grouped",
+        "folder_template_name": "default",
+    },
+}
+
+
 @app.command(name=None)
 def cli(
     version: bool = typer.Option(
@@ -48,25 +67,54 @@ def cli(
         help="Output directory to save challenges",
         rich_help_panel="Output",
     ),
-    template: Optional[str] = typer.Option(
-        None,
-        "--template",
-        help="Path to challenge output template (Jinja2)",
-        rich_help_panel="Output",
-    ),
-    folder_template: Optional[str] = typer.Option(
-        None,
-        "--folder-template",
-        help="Path to folder structure template (Jinja2)",
-        rich_help_panel="Output",
-    ),
-    index_template: Optional[str] = typer.Option(None, "--index-template", help="Custom index template"),
-    no_index: bool = typer.Option(False, "--no-index", help="Disable challenge index generation"),
     zip_output: bool = typer.Option(
         False,
         "--zip",
         help="Compress output folder after download",
         rich_help_panel="Output",
+    ),
+    output_format: Optional[str] = typer.Option(
+        None,
+        "--output-format",
+        help="Preset output format that selects a challenge template variant (e.g., json, markdown)",
+        rich_help_panel="Output",
+    ),
+    # Templating
+    template_dir: Optional[str] = typer.Option(
+        None,
+        "--template-dir",
+        help="Directory containing custom templates",
+        rich_help_panel="Templating",
+    ),
+    variant_name: str = typer.Option(
+        "default",
+        "--template",
+        help="Challenge template variant to use",
+        rich_help_panel="Templating",
+    ),
+    folder_template_name: str = typer.Option(
+        "default",
+        "--folder-template",
+        help="Template used for folder structure",
+        rich_help_panel="Templating",
+    ),
+    index_template_name: Optional[str] = typer.Option(
+        "grouped",
+        "--index-template",
+        help="Template used to render challenge index file",
+        rich_help_panel="Templating",
+    ),
+    no_index: bool = typer.Option(
+        False,
+        "--no-index",
+        help="Do not generate a challenge index file",
+        rich_help_panel="Templating",
+    ),
+    list_templates: bool = typer.Option(
+        False,
+        "--list-templates",
+        help="List available templates and exit",
+        rich_help_panel="Templating",
     ),
     # Authentication
     token: Optional[str] = typer.Option(
@@ -147,12 +195,6 @@ def cli(
         help="Number of parallel downloads",
         rich_help_panel="Behavior",
     ),
-    list_templates: bool = typer.Option(
-        False,
-        "--list-templates",
-        help="List available templates and exit",
-        rich_help_panel="Behavior",
-    ),
 ):
     if version:
         from ctfdl.utils.version import show_version
@@ -174,14 +216,30 @@ def cli(
             "[bold yellow]Debug mode active[/]. Logs saved to [underline]ctfdl-debug.log[/]"
         )
 
+    if list_templates:
+        from ctfdl.templating.inspector import list_available_templates
+
+        list_available_templates(
+            Path(template_dir) if template_dir else Path("."),
+            Path(__file__).parent.parent / "templates",
+        )
+        raise typer.Exit()
+
     if url is None:
         raise typer.BadParameter("Missing required argument: URL")
 
-    if list_templates:
-        from ctfdl.templates import list_all_templates
+    if output_format:
+        format_settings = output_format_map.get(output_format.lower())
+        if not format_settings:
+            raise typer.BadParameter(f"Unknown output format: {output_format}")
 
-        list_all_templates()
-        raise typer.Exit()
+        variant_name = format_settings["variant_name"]
+        index_template_name = format_settings["index_template_name"]
+        folder_template_name = format_settings["folder_template_name"]
+    else:
+        variant_name = variant_name
+        index_template_name = index_template_name
+        folder_template_name = folder_template_name
 
     from ctfdl.models.config import ExportConfig
     from ctfdl.core.entry import run_export
@@ -192,9 +250,12 @@ def cli(
         token=token,
         username=username,
         password=password,
-        cookie=cookie,
-        template=Path(template) if template else None,
-        folder_template=Path(folder_template) if folder_template else None,
+        cookie=Path(cookie) if cookie else None,
+        template_dir=Path(template_dir) if template_dir else None,
+        variant_name=variant_name,
+        folder_template_name=folder_template_name,
+        index_template_name=index_template_name,
+        no_index=no_index,
         categories=categories,
         min_points=min_points,
         max_points=max_points,

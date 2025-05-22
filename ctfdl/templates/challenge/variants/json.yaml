@@ -1,0 +1,5 @@
+name: json
+description: Outputs challenge data as JSON files.
+components:
+  - file: challenge.json
+    template: json.jinja

@@ -1,6 +1,6 @@
 from pathlib import Path
 from typing import Optional, List
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 
 class ExportConfig(BaseModel):
@@ -12,15 +12,21 @@ class ExportConfig(BaseModel):
     password: Optional[str] = None
     cookie: Optional[Path] = None
 
-    template: Optional[Path] = None
-    folder_template: Optional[Path] = None
+    # Templating
+    template_dir: Optional[Path] = None
+    variant_name: str = "default"
+    folder_template_name: str = "default"
+    index_template_name: Optional[str] = "grouped"
+    no_index: bool = False
 
+    # Filters
     categories: Optional[List[str]] = None
     min_points: Optional[int] = None
     max_points: Optional[int] = None
     solved: bool = False
     unsolved: bool = False
 
+    # Behavior
     update: bool = False
     no_attachments: bool = False
     parallel: int = 30

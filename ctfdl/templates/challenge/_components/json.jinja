@@ -1,0 +1,15 @@
+{
+  "name": "{{ challenge.name | e }}",
+  "category": "{{ challenge.category | e }}",
+  "value": {{ challenge.value }},
+  "description": {{ challenge.description | tojson }},
+  "solved": {{ challenge.solved | lower }},
+  "attachments": [
+    {% for att in challenge.attachments %}
+    {
+      "name": "{{ att.name | e }}",
+      "url": "{{ att.url | e }}"
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+}

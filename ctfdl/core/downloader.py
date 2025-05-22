@@ -9,8 +9,7 @@ from rich.progress import (
     TextColumn,
     TimeElapsedColumn,
 )
-from ctfdl.rendering.folder_renderer import FolderStructureRenderer
-from ctfdl.rendering.template_writer import TemplateWriter
+from ctfdl.templating.engine import TemplateEngine
 from ctfdl.core.client import get_authenticated_client
 import ctfdl.utils.console as console
 
@@ -21,8 +20,9 @@ async def download_challenges(
     password,
     token,
     output_dir,
-    template_path=None,
-    folder_template_path=None,
+    template_dir=None,
+    variant_name="default",
+    folder_template_name="default",
     categories=None,
     min_points=None,
     max_points=None,
@@ -42,11 +42,14 @@ async def download_challenges(
     )
     if not challenges:
         console.no_challenges_found()
-        return False
+        return False, []
     console.challenges_found(len(challenges))
 
-    writer = TemplateWriter(template_path)
-    folder_renderer = FolderStructureRenderer(folder_template_path)
+    template_engine = TemplateEngine(
+        user_template_dir=Path(template_dir) if template_dir else None,
+        builtin_template_dir=Path(__file__).parent.parent / "templates",
+    )
+
     out_dir = Path(output_dir)
     os.makedirs(out_dir, exist_ok=True)
 
@@ -55,19 +58,19 @@ async def download_challenges(
     async def process(chal):
         try:
             await process_challenge(
-                client, chal, writer, folder_renderer, out_dir, update, no_attachments
+                client,
+                chal,
+                template_engine,
+                variant_name,
+                folder_template_name,
+                out_dir,
+                update,
+                no_attachments,
+                all_challenges_data,
             )
             console.downloaded_challenge(chal.name, chal.category)
-            rel_path = folder_renderer.render(chal)
-            all_challenges_data.append({
-                "name": chal.name,
-                "category": chal.category,
-                "value": chal.value,
-                "solved": getattr(chal, "solved", False),
-                "path": str(rel_path) + "/README.md",
-            })
         except Exception as e:
-            console.failed_challenge(chal.name, e)
+            console.failed_challenge(chal.name, str(e))
 
     with Progress(
         SpinnerColumn(),
@@ -88,18 +91,22 @@ async def download_challenges(
 
         await asyncio.gather(*(worker(chal) for chal in challenges))
         progress.remove_task(main_task)
+
     return True, all_challenges_data
 
 
 async def process_challenge(
-    client, chal, writer, folder_renderer, output_dir: Path, update, no_attachments
+    client,
+    chal,
+    template_engine,
+    variant_name,
+    folder_template_name,
+    output_dir: Path,
+    update,
+    no_attachments,
+    all_challenges_data,
 ):
-    rel = folder_renderer.render(chal)
-    chal_folder = output_dir / rel
-    if update and chal_folder.exists():
-        return
-    os.makedirs(chal_folder, exist_ok=True)
-    data = {
+    challenge_data = {
         "name": chal.name,
         "category": chal.category,
         "value": chal.value,
@@ -107,8 +114,25 @@ async def process_challenge(
         "attachments": chal.attachments,
         "solved": getattr(chal, "solved", False),
     }
-    writer.write(data, str(chal_folder))
+
+    rel_path = template_engine.render_path(folder_template_name, challenge_data)
+    chal_folder = output_dir / rel_path
+    if update and chal_folder.exists():
+        return
+
+    os.makedirs(chal_folder, exist_ok=True)
+    template_engine.render_challenge(variant_name, challenge_data, chal_folder)
 
     if not no_attachments and chal.attachments:
         for att in chal.attachments:
-            await client.attachments.download(att, str((chal_folder / "files")))
+            await client.attachments.download(att, str(chal_folder / "files"))
+
+    all_challenges_data.append(
+        {
+            "name": chal.name,
+            "category": chal.category,
+            "value": chal.value,
+            "solved": getattr(chal, "solved", False),
+            "path": str(rel_path) + "/README.md",
+        }
+    )
