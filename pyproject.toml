@@ -1,6 +1,6 @@
 [project]
 name = "ctf-dl"
-version = "0.1.8"
+dynamic = ["version"]
 description = "Command-line tool to download CTF challenges"
 authors = [
   { name="bjornmorten", email="bjornmdev@proton.me" }
@@ -24,7 +24,7 @@ Repository = "https://github.com/bjornmorten/ctf-dl/"
 Issues = "https://github.com/bjornmorten/ctf-dl/issues"
 
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=61.0", "wheel", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
@@ -32,6 +32,10 @@ include-package-data = true
 
 [tool.setuptools.package-data]
 "ctfdl" = ["templates/**"]
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+local_scheme = "no-local-version"
 
 [project.scripts]
 ctf-dl = "ctfdl.cli.main:app"
