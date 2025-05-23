@@ -28,9 +28,9 @@ async def run_export(config: ExportConfig):
 
     solved_filter = True if config.solved else False if config.unsolved else None
 
-    output_dir = (
-        Path(tempfile.mkdtemp()) / "ctf-export" if config.zip_output else config.output
-    )
+    temp_dir = Path(tempfile.mkdtemp()) if config.zip_output else None
+    output_dir = (temp_dir / "ctf-export") if temp_dir else config.output
+    config.output = output_dir
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -46,4 +46,4 @@ async def run_export(config: ExportConfig):
             )
 
         if config.zip_output:
-            zip_output_folder(output_dir)
+            zip_output_folder(output_dir, archive_name="ctf-export")

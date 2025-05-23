@@ -6,6 +6,9 @@ import ctfdl.utils.console as console
 from ctfdl.core.client import get_authenticated_client
 from ctfdl.templating.context import TemplateEngineContext
 from ctfdl.models.config import ExportConfig
+from rich.console import Console as RichConsole
+
+progress_console = RichConsole()
 
 
 async def download_challenges(config: ExportConfig) -> tuple[bool, list]:
@@ -24,6 +27,8 @@ async def download_challenges(config: ExportConfig) -> tuple[bool, list]:
     if not challenges:
         console.no_challenges_found()
         return False, []
+
+    challenges.sort(key=lambda c: (c.category.lower(), c.name.lower()))
 
     console.challenges_found(len(challenges))
 
@@ -46,9 +51,9 @@ async def download_challenges(config: ExportConfig) -> tuple[bool, list]:
                 no_attachments=config.no_attachments,
                 all_challenges_data=all_challenges_data,
             )
-            console.downloaded_challenge(chal.name, chal.category)
+            console.downloaded_challenge(chal.name, chal.category, console=progress_console)
         except Exception as e:
-            console.failed_challenge(chal.name, str(e))
+            console.failed_challenge(chal.name, str(e), console=progress_console)
 
     from rich.progress import (
         Progress,
@@ -59,7 +64,6 @@ async def download_challenges(config: ExportConfig) -> tuple[bool, list]:
     )
 
     from rich.console import Console as RichConsole
-    progress_console = RichConsole()
 
     with Progress(
         SpinnerColumn(),

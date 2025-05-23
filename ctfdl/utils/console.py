@@ -1,59 +1,48 @@
 from rich.console import Console
 
-console = Console(log_path=False, log_time=False)
+# Default console used when none is passed explicitly
+_default_console = Console(log_path=False, log_time=False)
 
 # ===== Basic Notifications =====
 
-
-def info(msg: str):
+def info(msg: str, console: Console = _default_console):
     console.print(f"🔍 [cyan]{msg}[/]")
 
-
-def success(msg: str):
+def success(msg: str, console: Console = _default_console):
     console.print(f"✅ [green]{msg}[/]")
 
-
-def warning(msg: str):
+def warning(msg: str, console: Console = _default_console):
     console.print(f"⚠️ [yellow]{msg}[/]")
 
-
-def error(msg: str):
+def error(msg: str, console: Console = _default_console):
     console.print(f"❌ [bold red]{msg}[/]")
 
-
-def debug(msg: str):
+def debug(msg: str, console: Console = _default_console):
     console.print(f"[dim]{msg}[/]")
-
 
 # ===== Download Progress =====
 
-
-def connecting(url: str):
+def connecting(url: str, console: Console = _default_console):
     console.print(f"🛰️ Connecting to CTF platform: [cyan]{url}[/]")
 
+def no_challenges_found(console: Console = _default_console):
+    error("There are no challenges to download...", console)
 
-def no_challenges_found():
-    error("There are no challenges to download...")
+def challenges_found(count: int, console: Console = _default_console):
+    console.print(f"📦 Found [bold]{count} challenges[/] to download:\n")
 
-
-def challenges_found(challenges_count: int):
-    console.print(f"📦 Found [bold]{challenges_count} challenges[/] to download:\n")
-
-
-def downloaded_challenge(name: str, category: str):
+def downloaded_challenge(name: str, category: str, console: Console = _default_console):
     console.print(f"✅ Downloaded: [green]{name}[/] ([cyan]{category}[/])")
 
-
-def failed_challenge(name: str, reason: str):
+def failed_challenge(name: str, reason: str, console: Console = _default_console):
     console.print(f"❌ [bold red]ERROR:[/] Failed [green]{name}[/]: {reason}")
 
+def download_complete(console: Console = _default_console):
+    success("All challenges downloaded successfully!", console)
 
-def download_complete():
-    success("All challenges downloaded successfully!")
-
-
-def zipped_output(path: str):
+def zipped_output(path: str, console: Console = _default_console):
     console.print(f"🗂️ [green]Output saved to:[/] [bold underline]{path}[/]")
+
 
 
 # ===== Version and Update =====
