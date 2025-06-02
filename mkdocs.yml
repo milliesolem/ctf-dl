@@ -1,12 +1,26 @@
 site_name: ctf-dl
+repo_url: https://github.com/bjornmorten/ctf-dl
+repo_name: ctf-dl
+copyright: Copyright © 2025 bjornmorten
+
 theme:
   name: material
   features:
     - navigation.instant
     - navigation.sections
     - navigation.top
-repo_url: https://github.com/bjornmorten/ctf-dl
-repo_name: ctf-dl
+  palette:
+    scheme: slate
+    primary: blue
+    accent: blue
+
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/bjornmorten/ctf-dl/
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/ctf-dl/
 
 nav:
   - Home: index.md
