@@ -7,15 +7,35 @@ from ctfdl.core.client import get_authenticated_client
 from ctfdl.templating.context import TemplateEngineContext
 from ctfdl.models.config import ExportConfig
 from rich.console import Console as RichConsole
+from ctfbridge.exceptions import (
+    UnknownPlatformError,
+    LoginError,
+    MissingAuthMethodError,
+)
 
 progress_console = RichConsole()
 
 
 async def download_challenges(config: ExportConfig) -> tuple[bool, list]:
-    console.connecting(config.url)
-    client = await get_authenticated_client(
-        config.url, config.username, config.password, config.token
-    )
+    client = None
+    try:
+        with console.connecting(config.url):
+            client = await get_authenticated_client(
+                config.url, config.username, config.password, config.token
+            )
+        console.connected()
+    except UnknownPlatformError:
+        console.connection_failed("Platform is unsupported or could not be identified.")
+    except LoginError:
+        if config.username and config.password:
+            console.connection_failed("Invalid credentials")
+        elif config.token:
+            console.connection_failed("Invalid token")
+    except MissingAuthMethodError:
+        console.connection_failed("Invalid authentication type")
+
+    if not client:
+        return False, []
 
     challenges = await client.challenges.get_all(
         categories=config.categories,
@@ -51,7 +71,9 @@ async def download_challenges(config: ExportConfig) -> tuple[bool, list]:
                 no_attachments=config.no_attachments,
                 all_challenges_data=all_challenges_data,
             )
-            console.downloaded_challenge(chal.name, chal.category, console=progress_console)
+            console.downloaded_challenge(
+                chal.name, chal.category, console=progress_console
+            )
         except Exception as e:
             console.failed_challenge(chal.name, str(e), console=progress_console)
 
@@ -87,7 +109,6 @@ async def download_challenges(config: ExportConfig) -> tuple[bool, list]:
         progress.remove_task(main_task)
 
     return True, all_challenges_data
-
 
 
 async def process_challenge(
