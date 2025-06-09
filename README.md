@@ -21,7 +21,7 @@ ctf-dl https://demo.ctfd.io --token YOUR_TOKEN
 * 🧩 Format output using **custom Jinja2 templates** (Markdown, JSON, etc.)
 * 🎯 Apply filters: by category, point range, solved status
 * 🔐 Works across all major platforms via [ctfbridge](https://github.com/bjornmorten/ctfbridge)
-* ⚙️ **Preset output formats**: `jarkdown`, `json`
+* ⚙️ **Preset output formats**: `jmrkdown`, `json`
 
 ---
 
