@@ -2,7 +2,7 @@
   CTF-dl
 </h1>
 
-<h4 align="center">A fast and flexible command-line tool for downloading CTF challenges from all major CTF platform</h4>                                                                                                 
+<h4 align="center">A fast and flexible tool for downloading challenges from all major CTF platforms</h4>                                                                                                 
 <p align="center">
   <a href="https://pypi.org/project/ctf-dl/"><img src="https://img.shields.io/pypi/v/ctf-dl" alt="PyPI"></a>
 </p>
