@@ -1,8 +1,10 @@
 import logging
 import tempfile
 from pathlib import Path
+from collections import Counter
 
 from rich.console import Console
+from rich.table import Table
 
 from ctfdl.core.downloader import download_challenges
 from ctfdl.models.config import ExportConfig
@@ -37,7 +39,8 @@ async def run_export(config: ExportConfig):
     success, index_data = await download_challenges(config)
 
     if success:
-        console.print("🎉 [bold green]All challenges downloaded successfully![/]")
+        console.print(f"🎉 [bold green]{len(index_data)} challenges downloaded successfully![/bold green]")
+
         if not config.no_index:
             TemplateEngineContext.get().render_index(
                 template_name=config.index_template_name or "grouped",

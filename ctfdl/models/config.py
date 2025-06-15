@@ -28,7 +28,6 @@ class ExportConfig(BaseModel):
     unsolved: bool = False
 
     # Behavior
-    update: bool = False
     no_attachments: bool = False
     parallel: int = 30
     list_templates: bool = False

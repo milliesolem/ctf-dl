@@ -1,5 +1,6 @@
 import asyncio
 from typing import List, Optional
+from enum import Enum
 
 import typer
 from rich.console import Console
@@ -7,6 +8,11 @@ from rich.console import Console
 from ctfdl.cli.helpers import (build_export_config, handle_check_update,
                                handle_list_templates, handle_version,
                                resolve_output_format)
+
+class ChallengeStatus(str, Enum):
+    all = "all"
+    solved = "solved"
+    unsolved = "unsolved"
 
 console = Console(log_path=False)
 app = typer.Typer(
@@ -39,10 +45,10 @@ def cli(
         rich_help_panel="Options",
     ),
     debug: bool = typer.Option(
-        False, "--debug", help="Enable debug logging", rich_help_panel="Options"
+        False, "--debug", "-d", help="Enable debug logging", rich_help_panel="Options"
     ),
     url: Optional[str] = typer.Argument(
-        None, help="URL of the CTF platform", show_default=False
+        None, help="URL of the CTF instance (e.g., https://ctf.example.com)", show_default=False
     ),
     output: Optional[str] = typer.Option(
         "challenges",
@@ -54,12 +60,14 @@ def cli(
     zip_output: bool = typer.Option(
         False,
         "--zip",
+        "-z",
         help="Compress output folder after download",
         rich_help_panel="Output",
     ),
     output_format: Optional[str] = typer.Option(
         None,
         "--output-format",
+        "-f",
         help="Preset output format (json, markdown, minimal)",
         rich_help_panel="Output",
     ),
@@ -139,23 +147,12 @@ def cli(
     max_points: Optional[int] = typer.Option(
         None, "--max-points", help="Maximum challenge points", rich_help_panel="Filters"
     ),
-    solved: bool = typer.Option(
-        False,
-        "--solved",
-        help="Only download solved challenges",
+    status: ChallengeStatus = typer.Option(
+        ChallengeStatus.all,
+        "--status",
+        case_sensitive=False,
+        help="Filter challenges by their completion status",
         rich_help_panel="Filters",
-    ),
-    unsolved: bool = typer.Option(
-        False,
-        "--unsolved",
-        help="Only download unsolved challenges",
-        rich_help_panel="Filters",
-    ),
-    update: bool = typer.Option(
-        False,
-        "--update",
-        help="Skip challenges that exist locally",
-        rich_help_panel="Behavior",
     ),
     no_attachments: bool = typer.Option(
         False,
@@ -164,7 +161,7 @@ def cli(
         rich_help_panel="Behavior",
     ),
     parallel: int = typer.Option(
-        30,
+        10,
         "--parallel",
         help="Number of parallel downloads",
         rich_help_panel="Behavior",
