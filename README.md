@@ -1,5 +1,5 @@
 <h1 align="center">
-  CTF-dl
+  ctf-dl
 </h1>
 
 <h4 align="center">A fast and flexible tool for downloading challenges from all major CTF platforms</h4>                                                                                                 
