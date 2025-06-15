@@ -1,10 +1,19 @@
-# 🛠️ ctf-dl
+<h1 align="center">
+  CTF-dl
+</h1>
 
-**ctf-dl** is a fast and flexible command-line tool for downloading CTF challenges from various platforms. It supports authentication, filtering, custom templates, and preset output formats.
+<h4 align="center">A fast and flexible command-line tool for downloading CTF challenges from all major CTF platform</h4>                                                                                                 
+<p align="center">
+  <a href="https://pypi.org/project/ctf-dl/"><img src="https://img.shields.io/pypi/v/ctf-dl" alt="PyPI"></a>
+</p>
 
-> [!WARNING]
-> This project is still in development
-
+<p align="center">
+  <a href="#-features">Features</a> •
+  <a href="#-installation">Install</a> •
+  <a href="#-usage">Usage</a> •
+  <a href="#-examples">Examples</a> •
+  <a href="#-license">License</a>
+</p>
 
 ## 🚀 Quickstart
 
@@ -34,7 +43,7 @@ pip install ctf-dl
 
 ---
 
-## 🧪 CLI Usage
+## 🧪 Usage
 
 ```bash
 ctf-dl [OPTIONS] URL
