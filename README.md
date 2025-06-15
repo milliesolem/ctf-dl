@@ -2,8 +2,6 @@
 
 **ctf-dl** is a fast and flexible command-line tool for downloading CTF challenges from various platforms. It supports authentication, filtering, custom templates, and preset output formats.
 
-![demo](https://raw.githubusercontent.com/bjornmorten/ctf-dl/refs/heads/main/assets/demo.svg)
-
 > [!WARNING]
 > This project is still in development
 
