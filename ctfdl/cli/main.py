@@ -189,7 +189,7 @@ def cli(
 
     config = build_export_config(locals())
 
-    from ctfdl.core.entry import run_export
+    from ctfdl.downloader.entry import run_export
 
     asyncio.run(run_export(config))
 

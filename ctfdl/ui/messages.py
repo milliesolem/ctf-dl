@@ -71,45 +71,47 @@ def zipped_output(path: str, console: Console = _default_console):
 # ===== Version and Update =====
 
 
-def version_output(version: str):
+def version_output(version: str, console: Console = _default_console):
     console.print(f"📦 [bold]ctf-dl[/bold] version: [green]{version}[/green]")
 
 
-def update_available(pkg: str, installed: str, latest: str):
+def update_available(
+    pkg: str, installed: str, latest: str, console: Console = _default_console
+):
     console.print(
         f"📦 [yellow]{pkg}[/]: update available → [red]{installed}[/] → [green]{latest}[/]"
     )
 
 
-def up_to_date(pkg: str, version: str):
+def up_to_date(pkg: str, version: str, console: Console = _default_console):
     console.print(f"✅ {pkg} is up to date ([green]{version}[/])")
 
 
-def update_failed(pkg: str, reason: str):
+def update_failed(pkg: str, reason: str, console: Console = _default_console):
     console.print(f"⚠️ Failed to fetch version for [yellow]{pkg}[/]: {reason}")
 
 
-def not_installed(pkg: str):
+def not_installed(pkg: str, console: Console = _default_console):
     error(f"{pkg} is not installed.")
 
 
-def upgrade_tip(cmd: str):
+def upgrade_tip(cmd: str, console: Console = _default_console):
     console.print(f"\n🚀 To upgrade, run:\n[bold]{cmd}[/bold]")
 
 
 # ===== Templates =====
 
 
-def list_templates_header(name: str):
+def list_templates_header(name: str, console: Console = _default_console):
     console.print(f"\n📂 Available {name} Templates:")
 
 
-def list_template_item(name: str):
+def list_template_item(name: str, console: Console = _default_console):
     console.print(f"- {name}")
 
 
 # ===== Context Manager =====
 
 
-def spinner_status(message: str):
+def spinner_status(message: str, console: Console = _default_console):
     return console.status(message, spinner="dots")

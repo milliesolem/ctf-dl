@@ -1,5 +1,4 @@
 from ctfbridge import create_client
-from ctfbridge.exceptions import UnknownPlatformError
 
 
 async def get_authenticated_client(url: str, username=None, password=None, token=None):
