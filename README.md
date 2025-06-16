@@ -5,6 +5,7 @@
 <h4 align="center">A fast and flexible tool for downloading challenges from all major CTF platforms</h4>                                                                                                 
 <p align="center">
   <a href="https://pypi.org/project/ctf-dl/"><img src="https://img.shields.io/pypi/v/ctf-dl" alt="PyPI"></a>
+  <img src="https://img.shields.io/github/license/bjornmorten/ctf-dl" alt="License">
 </p>
 
 <p align="center">
