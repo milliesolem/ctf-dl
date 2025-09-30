@@ -1,13 +1,15 @@
 import asyncio
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
 
 from ctfbridge.exceptions import (
     LoginError,
     MissingAuthMethodError,
+    NotAuthenticatedError,
     UnknownPlatformError,
 )
 from ctfbridge.models.challenge import Challenge, ProgressData
+
 from ctfdl.downloader.client import get_authenticated_client
 from ctfdl.events import EventEmitter
 from ctfdl.models.config import ExportConfig
@@ -26,7 +28,7 @@ async def download_challenges(
         )
         await emitter.emit("connect_success")
     except UnknownPlatformError:
-        await emitter.emit("connect_fail", reason="Platform is unsupported")
+        await emitter.emit("connect_fail", reason="Platform is not supported")
         return False, []
     except LoginError:
         await emitter.emit("connect_fail", reason="Invalid credentials or token")
@@ -64,12 +66,14 @@ async def download_challenges(
 
             await process_challenge(
                 client=client,
+                emitter=emitter,
                 chal=chal,
                 template_engine=template_engine,
                 variant_name=config.variant_name,
                 folder_template_name=config.folder_template_name,
                 output_dir=output_dir,
                 no_attachments=config.no_attachments,
+                update=config.update,
                 all_challenges_data=all_challenges_data,
                 progress_callback=attachment_progress_callback,
                 attachment_concurrency=config.parallel,
@@ -86,30 +90,36 @@ async def download_challenges(
 
     await emitter.emit("download_start")
 
-    async for chal in challenges_iterator:
-        challenge_count += 1
-        task = asyncio.create_task(worker(chal))
-        tasks.append(task)
+    try:
+        async for chal in challenges_iterator:
+            challenge_count += 1
+            task = asyncio.create_task(worker(chal))
+            tasks.append(task)
+    except NotAuthenticatedError:
+        await emitter.emit("connect_fail", reason="Authentication required")
+        return False, []
 
     if challenge_count == 0:
         await emitter.emit("no_challenges_found")
-        await emitter.emit("download_complete", count=0)
+        await emitter.emit("download_complete")
         return False, []
 
     await asyncio.gather(*tasks)
 
-    await emitter.emit("download_complete", count=len(all_challenges_data))
+    await emitter.emit("download_complete")
     return True, all_challenges_data
 
 
 async def process_challenge(
     client,
+    emitter: EventEmitter,
     chal: Challenge,
     template_engine: TemplateEngine,
     variant_name: str,
     folder_template_name: str,
     output_dir: Path,
     no_attachments: bool,
+    update: bool,
     all_challenges_data: list,
     progress_callback: Callable,
     attachment_concurrency: int,
@@ -120,10 +130,18 @@ async def process_challenge(
         "value": chal.value,
         "description": chal.description,
         "attachments": chal.attachments,
+        "services": chal.services,
         "solved": getattr(chal, "solved", False),
     }
     rel_path_str = template_engine.render_path(folder_template_name, challenge_data)
     chal_folder = output_dir / rel_path_str
+
+    existed_before = chal_folder.exists()
+
+    if existed_before and not update:
+        await emitter.emit("challenge_skipped", challenge=chal)
+        return
+
     chal_folder.mkdir(parents=True, exist_ok=True)
     template_engine.render_challenge(variant_name, challenge_data, chal_folder)
     if not no_attachments and chal.attachments:
@@ -135,6 +153,9 @@ async def process_challenge(
             progress=progress_callback,
             concurrency=attachment_concurrency,
         )
+
+    await emitter.emit("challenge_downloaded", challenge=chal, updated=existed_before)
+
     all_challenges_data.append(
         {
             "name": chal.name,

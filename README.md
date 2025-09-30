@@ -31,7 +31,13 @@
 
 ## 📦 Installation
 
-Install via pip:
+Run directly with [uv](https://github.com/astral-sh/uv):
+
+```bash
+uvx ctf-dl
+```
+
+Or install permanently with pip:
 
 ```bash
 pip install ctf-dl
@@ -42,35 +48,37 @@ pip install ctf-dl
 ## 🚀 Quickstart
 
 ```bash
-ctf-dl https://demo.ctfd.io --token YOUR_TOKEN
+ctf-dl https://demo.ctfd.io -u user -p password
 ```
 
 ## 💡 Examples
 
+> ℹ️ If the CTF platform requires authentication, provide either:
+> - `--token YOUR_TOKEN`, or  
+> - `--username USERNAME --password PASSWORD`  
+
 ```bash
 # Download all challenges
-ctf-dl https://demo.ctfd.io --token YOUR_TOKEN
+ctf-dl https://demo.ctfd.io
 
 # Download to a custom directory
-ctf-dl https://demo.ctfd.io --token YOUR_TOKEN --output /tmp/ctf
-
-# Use JSON preset format
-ctf-dl https://demo.ctfd.io --token YOUR_TOKEN --output-format json
+ctf-dl https://demo.ctfd.io --output /tmp/ctf
 
 # Only download Web and Crypto challenges
-ctf-dl https://demo.ctfd.io --token YOUR_TOKEN --categories Web Crypto
+ctf-dl https://demo.ctfd.io --categories Web Crypto
 
-# Update only new challenges
-ctf-dl https://demo.ctfd.io --token YOUR_TOKEN --update
+# Overwrite previously downloaded challenges
+ctf-dl https://demo.ctfd.io --update
 
 # Download and zip output
-ctf-dl https://demo.ctfd.io --token YOUR_TOKEN --zip
+ctf-dl https://demo.ctfd.io --zip
+
+# Use JSON preset format
+ctf-dl https://demo.ctfd.io --output-format json
 
 # List available templates
 ctf-dl --list-templates
 
-# Check for updates
-ctf-dl --check-update
 ```
 
 ---

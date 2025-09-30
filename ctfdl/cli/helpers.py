@@ -36,6 +36,7 @@ def build_export_config(args: dict) -> ExportConfig:
         min_points=args["min_points"],
         max_points=args["max_points"],
         status=args["status"],
+        update=args["update"],
         no_attachments=args["no_attachments"],
         parallel=args["parallel"],
         list_templates=args["list_templates"],
@@ -56,7 +57,7 @@ def handle_check_update():
 
 def handle_list_templates(template_dir):
     list_available_templates(
-        Path(template_dir) if template_dir else Path("."),
+        Path(template_dir) if template_dir else Path(),
         Path(__file__).parent.parent / "templates",
     )
     raise typer.Exit()

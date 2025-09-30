@@ -173,5 +173,12 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-# Challenges output directory
+# Challenges output
 challenges
+ctf-export.zip
+
+#
+uv.lock
+
+#
+*.swp

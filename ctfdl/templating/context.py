@@ -1,14 +1,13 @@
 from pathlib import Path
-from typing import Optional
 
 from ctfdl.templating.engine import TemplateEngine
 
 
 class TemplateEngineContext:
-    _instance: Optional[TemplateEngine] = None
+    _instance: TemplateEngine | None = None
 
     @classmethod
-    def initialize(cls, user_template_dir: Optional[Path], builtin_template_dir: Path):
+    def initialize(cls, user_template_dir: Path | None, builtin_template_dir: Path):
         if cls._instance is None:
             cls._instance = TemplateEngine(user_template_dir, builtin_template_dir)
 

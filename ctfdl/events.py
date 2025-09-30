@@ -1,6 +1,7 @@
 import asyncio
 from collections import defaultdict
-from typing import Callable, Any, DefaultDict, List
+from collections.abc import Callable
+from typing import Any
 
 
 class EventEmitter:
@@ -8,7 +9,7 @@ class EventEmitter:
 
     def __init__(self):
         """Initializes the EventEmitter with a dictionary to hold listeners."""
-        self._listeners: DefaultDict[str, List[Callable]] = defaultdict(list)
+        self._listeners: defaultdict[str, list[Callable]] = defaultdict(list)
 
     def on(self, event_name: str, listener: Callable[..., Any]):
         """

@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import List
 
 import yaml
 from jinja2 import Environment, TemplateNotFound
@@ -9,7 +8,7 @@ from rich.table import Table
 from ctfdl.templating.metadata_loader import parse_template_metadata
 
 
-def validate_template_dir(template_dir: Path, env: Environment) -> List[str]:
+def validate_template_dir(template_dir: Path, env: Environment) -> list[str]:
     errors = []
     variant_dir = template_dir / "challenge/variants"
 
@@ -18,16 +17,15 @@ def validate_template_dir(template_dir: Path, env: Environment) -> List[str]:
 
     for file in variant_dir.glob("*.yaml"):
         try:
-            with open(file, "r", encoding="utf-8") as f:
-                data = yaml.safe_load(f)
-                for comp in data.get("components", []):
-                    path = f"challenge/_components/{comp['template']}"
-                    try:
-                        env.get_template(path)
-                    except TemplateNotFound:
-                        errors.append(
-                            f"Missing component template: {path} (from {file.name})"
-                        )
+            data = yaml.safe_load(file.read_text(encoding="utf-8"))
+            for comp in data.get("components", []):
+                path = f"challenge/_components/{comp['template']}"
+                try:
+                    env.get_template(path)
+                except TemplateNotFound:
+                    errors.append(
+                        f"Missing component template: {path} (from {file.name})"
+                    )
         except Exception as e:
             errors.append(f"Failed to parse {file.name}: {e}")
 
@@ -46,9 +44,8 @@ def list_available_templates(
             name = file.stem
             description = ""
             try:
-                with open(file, "r", encoding="utf-8") as f:
-                    data = yaml.safe_load(f)
-                    description = data.get("description", "")
+                data = yaml.safe_load(file.read_text(encoding="utf-8"))
+                description = data.get("description", "")
             except Exception:
                 description = "[red](invalid or unreadable)[/red]"
             entries.append((name, description))

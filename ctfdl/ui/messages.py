@@ -1,6 +1,5 @@
 from rich.console import Console
 
-# Default console used when none is passed explicitly
 _default_console = Console(log_path=False, log_time=False)
 
 # ===== Basic Notifications =====
@@ -60,8 +59,36 @@ def failed_challenge(name: str, reason: str, console: Console = _default_console
     console.print(f"❌ [bold red]ERROR:[/] Failed [green]{name}[/]: {reason}")
 
 
-def download_complete(console: Console = _default_console):
-    success("All challenges downloaded successfully!", console)
+def download_success_new(count: int, console: Console = _default_console):
+    console.print(
+        f"🎉 [bold green]{count} challenges downloaded successfully![/bold green]"
+    )
+
+
+def download_success_skipped_all(count: int, console: Console = _default_console):
+    console.print(
+        f"⏩ [bold yellow]All {count} challenges were skipped.[/bold yellow]\n"
+        f"   Use [cyan]--update[/cyan] to re-download "
+        f"[dim](this will overwrite existing files)[/dim]."
+    )
+
+
+def download_success_updated_all(count: int, console: Console = _default_console):
+    console.print(
+        f"🔄 [bold green]All {count} challenges were successfully updated![/bold green]"
+    )
+
+
+def download_success_summary(
+    downloaded: int, updated: int, skipped: int, console: Console = _default_console
+):
+    console.print("🎉 [bold green]Download summary:[/bold green]")
+    if downloaded:
+        console.print(f"   ✅ {downloaded} new challenges downloaded")
+    if updated:
+        console.print(f"   🔄 {updated} challenges updated")
+    if skipped:
+        console.print(f"   ⏩ {skipped} challenges skipped")
 
 
 def zipped_output(path: str, console: Console = _default_console):

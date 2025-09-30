@@ -1,18 +1,23 @@
 import asyncio
-from typing import List, Optional
 from enum import Enum
 
 import typer
 from rich.console import Console
 
-from ctfdl.cli.helpers import (build_export_config, handle_check_update,
-                               handle_list_templates, handle_version,
-                               resolve_output_format)
+from ctfdl.cli.helpers import (
+    build_export_config,
+    handle_check_update,
+    handle_list_templates,
+    handle_version,
+    resolve_output_format,
+)
+
 
 class ChallengeStatus(str, Enum):
     all = "all"
     solved = "solved"
     unsolved = "unsolved"
+
 
 console = Console(log_path=False)
 app = typer.Typer(
@@ -47,10 +52,12 @@ def cli(
     debug: bool = typer.Option(
         False, "--debug", "-d", help="Enable debug logging", rich_help_panel="Options"
     ),
-    url: Optional[str] = typer.Argument(
-        None, help="URL of the CTF instance (e.g., https://ctf.example.com)", show_default=False
+    url: str | None = typer.Argument(
+        None,
+        help="URL of the CTF instance (e.g., https://ctf.example.com)",
+        show_default=False,
     ),
-    output: Optional[str] = typer.Option(
+    output: str | None = typer.Option(
         "challenges",
         "--output",
         "-o",
@@ -64,14 +71,14 @@ def cli(
         help="Compress output folder after download",
         rich_help_panel="Output",
     ),
-    output_format: Optional[str] = typer.Option(
+    output_format: str | None = typer.Option(
         None,
         "--output-format",
         "-f",
         help="Preset output format (json, markdown, minimal)",
         rich_help_panel="Output",
     ),
-    template_dir: Optional[str] = typer.Option(
+    template_dir: str | None = typer.Option(
         None,
         "--template-dir",
         help="Directory containing custom templates",
@@ -89,7 +96,7 @@ def cli(
         help="Template for folder structure",
         rich_help_panel="Templating",
     ),
-    index_template_name: Optional[str] = typer.Option(
+    index_template_name: str | None = typer.Option(
         "grouped",
         "--index-template",
         help="Template for challenge index",
@@ -107,44 +114,44 @@ def cli(
         help="List available templates and exit",
         rich_help_panel="Templating",
     ),
-    token: Optional[str] = typer.Option(
+    token: str | None = typer.Option(
         None,
         "--token",
         "-t",
         help="Authentication token",
         rich_help_panel="Authentication",
     ),
-    username: Optional[str] = typer.Option(
+    username: str | None = typer.Option(
         None,
         "--username",
         "-u",
         help="Username for login",
         rich_help_panel="Authentication",
     ),
-    password: Optional[str] = typer.Option(
+    password: str | None = typer.Option(
         None,
         "--password",
         "-p",
         help="Password for login",
         rich_help_panel="Authentication",
     ),
-    cookie: Optional[str] = typer.Option(
+    cookie: str | None = typer.Option(
         None,
         "--cookie",
         "-c",
         help="Path to cookie/session file",
         rich_help_panel="Authentication",
     ),
-    categories: Optional[List[str]] = typer.Option(
+    categories: list[str] | None = typer.Option(
         None,
         "--categories",
         help="Only download specified categories",
         rich_help_panel="Filters",
     ),
-    min_points: Optional[int] = typer.Option(
+    min_points: int | None = typer.Option(
         None, "--min-points", help="Minimum challenge points", rich_help_panel="Filters"
     ),
-    max_points: Optional[int] = typer.Option(
+    max_points: int | None = typer.Option(
         None, "--max-points", help="Maximum challenge points", rich_help_panel="Filters"
     ),
     status: ChallengeStatus = typer.Option(
@@ -153,6 +160,12 @@ def cli(
         case_sensitive=False,
         help="Filter challenges by their completion status",
         rich_help_panel="Filters",
+    ),
+    update: bool = typer.Option(
+        False,
+        "--update",
+        help="Update existing challenges instead of skipping them (overwrites existing files)",
+        rich_help_panel="Behavior",
     ),
     no_attachments: bool = typer.Option(
         False,

@@ -1,19 +1,15 @@
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 import yaml
 
 
 class VariantLoader:
-    def __init__(self, user_template_dir: Optional[Path], builtin_template_dir: Path):
+    def __init__(self, user_template_dir: Path | None, builtin_template_dir: Path):
         self.user_dir = user_template_dir
         self.builtin_dir = builtin_template_dir
 
-    def _load_yaml(self, path: Path) -> Dict[str, Any]:
-        with open(path, "r", encoding="utf-8") as f:
-            return yaml.safe_load(f)
-
-    def resolve_variant(self, name: str) -> Dict[str, Any]:
+    def resolve_variant(self, name: str) -> dict[str, Any]:
         variant_path = self._variant_path(name)
         if not variant_path.exists():
             raise FileNotFoundError(f"Variant '{name}' not found at {variant_path}")
@@ -29,6 +25,9 @@ class VariantLoader:
             return merged
 
         return variant
+
+    def _load_yaml(self, path: Path) -> dict[str, Any]:
+        return yaml.safe_load(path.read_text(encoding="utf-8"))
 
     def _variant_path(self, name: str) -> Path:
         root = (

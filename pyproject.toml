@@ -7,7 +7,7 @@ authors = [
 ]
 license = { text = "MIT" }
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 keywords = ["ctf", "ctf-tools"]
 classifiers = [
   "Programming Language :: Python :: 3",
@@ -24,7 +24,10 @@ dependencies = [
   "typer>=0.15.3",
   "rich>=14.0.0",
   "Jinja2>=3.1.6",
-  "PyYAML>=6.0.0"
+  "PyYAML>=6.0.0",
+  "python-slugify[unidecode]>=8.0.4",
+  "mdformat==0.7.22",
+  "mdformat_tables==1.0.0"
 ]
 
 [project.urls]
@@ -38,6 +41,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 include-package-data = true
+packages = ["ctfdl"]
 
 [tool.setuptools.package-data]
 "ctfdl" = ["templates/**"]
@@ -45,6 +49,24 @@ include-package-data = true
 [tool.setuptools_scm]
 version_scheme = "post-release"
 local_scheme = "no-local-version"
+
+[tool.ruff.lint]
+extend-select = [
+    "I",
+    "UP",
+    "C4",
+    "ISC",
+    "LOG",
+    "ICN",
+    "SIM",
+    "TID",
+    "TCH",
+    "TC",
+    "PTH",
+    "S",
+    "DTZ",
+    "N",
+]
 
 [project.scripts]
 ctf-dl = "ctfdl.cli.main:app"

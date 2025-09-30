@@ -1,23 +1,43 @@
+{# 
+description: Challenge overview.
+prettify: true
+#}
 # {{ challenge.name }}
 
 **Category:** {{ challenge.category }}
 **Points:** {{ challenge.value }}
 **Solved:** {{ "✅ Yes" if challenge.solved else "❌ No" }}
 
----
-
 ## Description
 
+{% if challenge.description %}
 {{ challenge.description }}
+{% else %}
+_No description_
+{% endif %}
 
----
+{% if challenge.services %}
+## Services
 
-## Attachments
+{% for service in challenge.services %}
+- {% if service.url %}
+  [{{ service.url }}]({{ service.url }})
+{% elif service.raw %}
+  `{{ service.raw }}`
+{% elif service.host and service.port %}
+  `nc {{ service.host }} {{ service.port }}`
+{% else %}
+  (service details not available)
+{% endif %}
+{% endfor %}
+
+{% endif %}
 
 {% if challenge.attachments %}
+## Attachments
+
 {% for attachment in challenge.attachments %}
 - [{{ attachment.name }}](files/{{ attachment.name }})
 {% endfor %}
-{% else %}
-_No attachments_
+
 {% endif %}

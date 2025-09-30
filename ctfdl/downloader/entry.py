@@ -5,13 +5,12 @@ from pathlib import Path
 from rich.console import Console
 
 from ctfdl.downloader.downloader import download_challenges
+from ctfdl.events import EventEmitter
 from ctfdl.models.config import ExportConfig
 from ctfdl.templating.context import TemplateEngineContext
+from ctfdl.ui.rich_handler import RichConsoleHandler
 from ctfdl.utils.logging_config import setup_logging_with_rich
 from ctfdl.utils.zip_output import zip_output_folder
-
-from ctfdl.events import EventEmitter
-from ctfdl.ui.rich_handler import RichConsoleHandler
 
 console = Console()
 logger = logging.getLogger("ctfdl.entry")
@@ -41,9 +40,7 @@ async def run_export(config: ExportConfig):
     success, index_data = await download_challenges(config, emitter)
 
     if success:
-        console.print(
-            f"🎉 [bold green]{len(index_data)} challenges downloaded successfully![/bold green]"
-        )
+        await emitter.emit("download_success")
 
         if not config.no_index:
             TemplateEngineContext.get().render_index(
