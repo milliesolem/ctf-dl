@@ -73,7 +73,7 @@ ctf-dl https://demo.ctfd.io --update
 # Download and zip output
 ctf-dl https://demo.ctfd.io --zip
 
-# Use JSON preset format
+# Save output as JSON
 ctf-dl https://demo.ctfd.io --output-format json
 
 # List available templates
@@ -87,6 +87,7 @@ ctf-dl --list-templates
 
 ```
 challenges/
+├── README.md
 ├── crypto/
 │   ├── rsa-beginner/
 │   │   ├── README.md
