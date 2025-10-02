@@ -1,4 +1,5 @@
 import asyncio
+import getpass
 from enum import Enum
 
 import typer
@@ -191,6 +192,9 @@ def cli(
 
     if url is None:
         raise typer.BadParameter("Missing required argument: URL")
+
+    if username and not password:
+        password = getpass.getpass("Password: ")
 
     if output_format:
         try:
