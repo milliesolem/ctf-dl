@@ -1,5 +1,6 @@
 import asyncio
 import getpass
+import sys
 from enum import Enum
 
 import typer
@@ -194,7 +195,13 @@ def cli(
         raise typer.BadParameter("Missing required argument: URL")
 
     if username and not password:
-        password = getpass.getpass("Password: ")
+        if sys.stdin.isatty():
+            password = getpass.getpass("Password: ")
+        else:
+            typer.secho(
+                "Error: password required but not provided", fg=typer.colors.RED
+            )
+            raise typer.Exit(code=1)
 
     if output_format:
         try:
