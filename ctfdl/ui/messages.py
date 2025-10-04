@@ -60,9 +60,7 @@ def failed_challenge(name: str, reason: str, console: Console = _default_console
 
 
 def download_success_new(count: int, console: Console = _default_console):
-    console.print(
-        f"🎉 [bold green]{count} challenges downloaded successfully![/bold green]"
-    )
+    console.print(f"🎉 [bold green]{count} challenges downloaded successfully![/bold green]")
 
 
 def download_success_skipped_all(count: int, console: Console = _default_console):
@@ -74,9 +72,7 @@ def download_success_skipped_all(count: int, console: Console = _default_console
 
 
 def download_success_updated_all(count: int, console: Console = _default_console):
-    console.print(
-        f"🔄 [bold green]All {count} challenges were successfully updated![/bold green]"
-    )
+    console.print(f"🔄 [bold green]All {count} challenges were successfully updated![/bold green]")
 
 
 def download_success_summary(
@@ -102,9 +98,7 @@ def version_output(version: str, console: Console = _default_console):
     console.print(f"📦 [bold]ctf-dl[/bold] version: [green]{version}[/green]")
 
 
-def update_available(
-    pkg: str, installed: str, latest: str, console: Console = _default_console
-):
+def update_available(pkg: str, installed: str, latest: str, console: Console = _default_console):
     console.print(
         f"📦 [yellow]{pkg}[/]: update available → [red]{installed}[/] → [green]{latest}[/]"
     )

@@ -198,22 +198,20 @@ def cli(
         if sys.stdin.isatty():
             password = getpass.getpass("Password: ")
         else:
-            typer.secho(
-                "Error: password required but not provided", fg=typer.colors.RED
-            )
+            typer.secho("Error: password required but not provided", fg=typer.colors.RED)
             raise typer.Exit(code=1)
 
     if output_format:
         try:
-            variant_name, index_template_name, folder_template_name = (
-                resolve_output_format(output_format)
+            variant_name, index_template_name, folder_template_name = resolve_output_format(
+                output_format
             )
         except ValueError as e:
             raise typer.BadParameter(str(e))
 
     config = build_export_config(locals())
 
-    from ctfdl.downloader.entry import run_export
+    from ctfdl.challenges.entry import run_export
 
     asyncio.run(run_export(config))
 

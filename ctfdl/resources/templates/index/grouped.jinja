@@ -6,13 +6,13 @@ prettify: true
 # Challenge Index
 
 {% set grouped = {} %}
-{% for c in challenges %}{% set _ = grouped.setdefault(c.category, []).append(c) %}{% endfor %}
+{% for c in challenges %}{% set _ = grouped.setdefault(c.data.category, []).append(c) %}{% endfor %}
 
 {% for category, items in grouped.items() %}
 ## {{ category }}
 | Name | Points | Solved | Path |
 |------|--------|--------|------|
 {% for c in items %}
-| {{ c.name }} | {{ c.value }} | {{ "✅" if c.solved else "❌" }} | [Link]({{ c.path }}) |
+| {{ c.data.name }} | {{ c.data.value }} | {{ "✅" if c.data.solved else "❌" }} | [Link]({{ c.path }}) |
 {% endfor %}
 {% endfor %}

@@ -1,0 +1,8 @@
+{# 
+output_file: index.json
+description: JSON index of challenges
+prettify: true
+#}
+{
+    "challenges": {{ challenges | map(attribute="data") | list | tojson }}
+}

@@ -1,12 +1,14 @@
 from pathlib import Path
 
+from ctfbridge.models.challenge import Challenge as CTFBridgeChallenge
 from jinja2 import ChoiceLoader, Environment, FileSystemLoader, TemplateNotFound
 from slugify import slugify
 
-from ctfdl.templating.inspector import list_available_templates, validate_template_dir
-from ctfdl.templating.metadata_loader import parse_template_metadata
-from ctfdl.templating.renderers import ChallengeRenderer, FolderRenderer, IndexRenderer
-from ctfdl.templating.variant_loader import VariantLoader
+from ctfdl.core.models import ChallengeEntry
+from ctfdl.rendering.inspector import list_available_templates, validate_template_dir
+from ctfdl.rendering.metadata_loader import parse_template_metadata
+from ctfdl.rendering.renderers import ChallengeRenderer, FolderRenderer, IndexRenderer
+from ctfdl.rendering.variant_loader import VariantLoader
 
 
 class TemplateEngine:
@@ -47,7 +49,7 @@ class TemplateEngine:
 
         return template, metadata
 
-    def render_challenge(self, variant_name: str, challenge: dict, output_dir: Path):
+    def render_challenge(self, variant_name: str, challenge: CTFBridgeChallenge, output_dir: Path):
         variant = self.variant_loader.resolve_variant(variant_name)
         for comp in variant["components"]:
             template_file = f"challenge/_components/{comp['template']}"
@@ -55,22 +57,18 @@ class TemplateEngine:
             config["output_file"] = comp["file"]
             self.challenge_renderer.render(template, config, challenge, output_dir)
 
-    def render_path(self, template_name: str, challenge: dict) -> str:
+    def render_path(self, template_name: str, challenge: CTFBridgeChallenge) -> str:
         template_file = f"folder_structure/{template_name}.jinja"
         template, _ = self._load_with_metadata(template_file)
         return self.folder_renderer.render(template, challenge)
 
-    def render_index(self, template_name: str, challenges: list, output_path: Path):
+    def render_index(self, template_name: str, challenges: list[ChallengeEntry], output_path: Path):
         template_file = f"index/{template_name}.jinja"
         template, config = self._load_with_metadata(template_file)
         self.index_renderer.render(template, config, challenges, output_path)
 
     def validate(self) -> list:
-        return validate_template_dir(
-            self.user_template_dir or self.builtin_template_dir, self.env
-        )
+        return validate_template_dir(self.user_template_dir or self.builtin_template_dir, self.env)
 
     def list_templates(self) -> None:
-        list_available_templates(
-            self.user_template_dir or Path(), self.builtin_template_dir
-        )
+        list_available_templates(self.user_template_dir or Path(), self.builtin_template_dir)

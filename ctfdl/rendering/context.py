@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from ctfdl.templating.engine import TemplateEngine
+from ctfdl.rendering.engine import TemplateEngine
 
 
 class TemplateEngineContext:

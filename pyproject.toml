@@ -19,7 +19,7 @@ classifiers = [
 ]
 
 dependencies = [
-  "ctfbridge>=0.4.0",
+  "ctfbridge>=0.4.4",
   "httpx>=0.28.0",
   "typer>=0.15.3",
   "rich>=14.0.0",
@@ -44,11 +44,15 @@ include-package-data = true
 packages = ["ctfdl"]
 
 [tool.setuptools.package-data]
-"ctfdl" = ["templates/**"]
+"ctfdl" = ["resources/**"]
 
 [tool.setuptools_scm]
 version_scheme = "post-release"
 local_scheme = "no-local-version"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
 
 [tool.ruff.lint]
 extend-select = [

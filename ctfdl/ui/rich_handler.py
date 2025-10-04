@@ -3,13 +3,14 @@ import asyncio
 from ctfbridge.models.challenge import Challenge, ProgressData
 from rich.console import Console
 from rich.live import Live
-from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
+from rich.progress import Progress, ProgressColumn, SpinnerColumn, TextColumn
 from rich.progress_bar import ProgressBar
 from rich.table import Table
+from rich.text import Text
 from rich.tree import Tree
 
 import ctfdl.ui.messages as console_utils
-from ctfdl.events import EventEmitter
+from ctfdl.core.events import EventEmitter
 
 
 def handles(event_name: str):
@@ -22,6 +23,17 @@ def handles(event_name: str):
     return decorator
 
 
+class AdaptiveTimeColumn(ProgressColumn):
+    def render(self, task):
+        elapsed = int(task.elapsed or 0)
+        if elapsed < 60:
+            text = f"{elapsed}s"
+        else:
+            minutes, seconds = divmod(elapsed, 60)
+            text = f"{minutes}m {seconds:02d}s"
+        return Text(text, style="yellow")
+
+
 class RichConsoleHandler:
     def __init__(self, emitter: EventEmitter):
         self._console = Console()
@@ -29,7 +41,7 @@ class RichConsoleHandler:
             SpinnerColumn(),
             TextColumn("[bold blue]{task.description}"),
             TextColumn("[green]({task.completed} downloaded)"),
-            TimeElapsedColumn(),
+            AdaptiveTimeColumn(),
             console=self._console,
         )
         self._tree = Tree(self._progress)
@@ -37,7 +49,7 @@ class RichConsoleHandler:
             self._tree,
             console=self._console,
             refresh_per_second=10,
-            transient=True,  # clear display on exit
+            transient=True,
         )
 
         self._main_task_id = None
@@ -168,9 +180,7 @@ class RichConsoleHandler:
     # ===== Attachments =====
 
     @handles("attachment_progress")
-    async def on_attachment_progress(
-        self, progress_data: ProgressData, challenge: Challenge
-    ):
+    async def on_attachment_progress(self, progress_data: ProgressData, challenge: Challenge):
         pd = progress_data
         async with self._lock:
             challenge_node_info = self._challenge_nodes.get(challenge.name)

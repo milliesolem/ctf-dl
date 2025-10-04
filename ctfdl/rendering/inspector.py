@@ -5,7 +5,7 @@ from jinja2 import Environment, TemplateNotFound
 from rich.console import Console
 from rich.table import Table
 
-from ctfdl.templating.metadata_loader import parse_template_metadata
+from ctfdl.rendering.metadata_loader import parse_template_metadata
 
 
 def validate_template_dir(template_dir: Path, env: Environment) -> list[str]:
@@ -23,18 +23,14 @@ def validate_template_dir(template_dir: Path, env: Environment) -> list[str]:
                 try:
                     env.get_template(path)
                 except TemplateNotFound:
-                    errors.append(
-                        f"Missing component template: {path} (from {file.name})"
-                    )
+                    errors.append(f"Missing component template: {path} (from {file.name})")
         except Exception as e:
             errors.append(f"Failed to parse {file.name}: {e}")
 
     return errors
 
 
-def list_available_templates(
-    user_template_dir: Path, builtin_template_dir: Path
-) -> None:
+def list_available_templates(user_template_dir: Path, builtin_template_dir: Path) -> None:
     console = Console()
     all_sources = [("User", user_template_dir), ("Built-in", builtin_template_dir)]
 

@@ -59,22 +59,22 @@ If the CTF platform requires authentication, provide either:
 
 ```bash
 # Download all challenges
-ctf-dl https://demo.ctfd.io
+ctf-dl https://ctf.example.com
 
 # Download to a custom directory
-ctf-dl https://demo.ctfd.io --output /tmp/ctf
+ctf-dl https://ctf.example.com --output /tmp/ctf
 
 # Only download Web and Crypto challenges
-ctf-dl https://demo.ctfd.io --categories Web Crypto
+ctf-dl https://ctf.example.com --categories Web Crypto
 
 # Overwrite previously downloaded challenges
-ctf-dl https://demo.ctfd.io --update
+ctf-dl https://ctf.example.com --update
 
 # Download and zip output
-ctf-dl https://demo.ctfd.io --zip
+ctf-dl https://ctf.example.com --zip
 
 # Save output as JSON
-ctf-dl https://demo.ctfd.io --output-format json
+ctf-dl https://ctf.example.com --output-format json
 
 # List available templates
 ctf-dl --list-templates
