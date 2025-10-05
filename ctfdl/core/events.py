@@ -1,7 +1,10 @@
 import asyncio
+import logging
 from collections import defaultdict
 from collections.abc import Callable
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 
 class EventEmitter:
@@ -36,4 +39,4 @@ class EventEmitter:
                 else:
                     listener(*args, **kwargs)
             except Exception as e:
-                print(f"Error in event listener for '{event_name}': {e}")
+                logger.exception(f"Error in event listener for '{event_name}': {e}")
