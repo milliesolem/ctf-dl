@@ -2,7 +2,8 @@
   ctf-dl
 </h1>
 
-<h4 align="center">A fast and flexible tool for downloading challenges from all major CTF platforms</h4>                                                                                                 
+<h4 align="center">Fast and flexible challenge downloader for all major CTF platforms</h4>
+
 <p align="center">
   <a href="https://pypi.org/project/ctf-dl/"><img src="https://img.shields.io/pypi/v/ctf-dl" alt="PyPI"></a>
   <img src="https://img.shields.io/github/license/bjornmorten/ctf-dl" alt="License">
@@ -17,17 +18,13 @@
 </p>
 
 
----
-
 ## 🔧 Features
 
 * 🔽 Download **all challenges** from a CTF
 * 🗂️ Organize challenges with **custom folder structures**
 * 🧩 Format output using **custom Jinja2 templates** (Markdown, JSON, etc.)
 * 🎯 Apply filters: by category, point range, solved status
-* 🔐 Works across all major platforms via [ctfbridge](https://github.com/bjornmorten/ctfbridge)
-
----
+* 🌐 Works with **CTFd, rCTF, GZCTF, HTB, Berg, and EPT** via [ctfbridge](https://github.com/bjornmorten/ctfbridge)
 
 ## 📦 Installation
 
@@ -42,8 +39,6 @@ Or install permanently with pip:
 ```bash
 pip install ctf-dl
 ```
-
----
 
 ## 🚀 Quickstart
 
@@ -81,8 +76,6 @@ ctf-dl --list-templates
 
 ```
 
----
-
 ## 📁 Default Output Structure
 
 ```
@@ -101,7 +94,9 @@ challenges/
 │   │       └── app.py
 ```
 
----
+## 🤝 Contributing
+
+Contributions are welcome! See [ctfbridge](https://github.com/bjornmorten/ctfbridge) regarding platform support, or open an issue or pull request to improve **ctf-dl** itself.
 
 ## 🪪 License
 
