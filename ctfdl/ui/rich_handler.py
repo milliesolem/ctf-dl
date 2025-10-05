@@ -97,6 +97,12 @@ class RichConsoleHandler:
             self._progress.update(self._main_task_id, description="No challenges found")
         console_utils.no_challenges_found(console=self._console)
 
+    @handles("download_fail")
+    def on_download_fail(self, msg: str):
+        if self._live.is_started:
+            self._live.stop()
+        console_utils.error(msg)
+
     @handles("download_success")
     def on_download_success(self):
         if self._live.is_started:
