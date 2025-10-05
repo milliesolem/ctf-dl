@@ -30,6 +30,13 @@ dependencies = [
   "mdformat_tables==1.0.0"
 ]
 
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0",
+  "pytest-mock>=3.15.0",
+  "ruff>=0.13.0",
+]
+
 [project.urls]
 Homepage = "https://github.com/bjornmorten/ctf-dl/"
 Repository = "https://github.com/bjornmorten/ctf-dl/"
@@ -72,6 +79,9 @@ extend-select = [
     "DTZ",
     "N",
 ]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*" = ["S"]
 
 [project.scripts]
 ctf-dl = "ctfdl.cli.main:app"
