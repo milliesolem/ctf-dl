@@ -26,11 +26,19 @@ async def download_challenges(config: ExportConfig, emitter: EventEmitter) -> tu
         )
         await emitter.emit("connect_success")
     except UnknownPlatformError:
-        await emitter.emit("connect_fail", reason="Platform is not supported")
+        await emitter.emit(
+            "connect_fail",
+            reason="Unsupported platform. You may suggest adding support here: https://github.com/bjornmorten/ctfbridge/issues",
+        )
         return False, []
     except UnknownBaseURLError:
         await emitter.emit(
-            "connect_fail", reason="Platform was identified, but base URL could not be determined"
+            "connect_fail",
+            reason=(
+                "Platform was identified, but base URL could not be determined. "
+                "If you believe this is an error, you may open an issue here: "
+                "https://github.com/bjornmorten/ctfbridge/issues"
+            ),
         )
         return False, []
     except LoginError:
