@@ -1,2 +1,2 @@
 {# description: Organizes by category and challenge name #}
-{{ challenge.category | slugify }}/{{ challenge.name | slugify }}
+{{ challenge.category | slugify }}/{% if challenge.subcategory %}{{ challenge.subcategory | slugify }}/{% endif %}{{ challenge.name | slugify }}

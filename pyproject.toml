@@ -19,7 +19,7 @@ classifiers = [
 ]
 
 dependencies = [
-  "ctfbridge>=0.4.4",
+  "ctfbridge>=0.7.0",
   "httpx>=0.28.0",
   "typer>=0.15.3",
   "rich>=14.0.0",
