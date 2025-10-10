@@ -20,13 +20,12 @@
 
 ## 🔧 Features
 
-| Feature | Description |
-|----------|--------------|
-| 🔽 Download | All challenges from supported CTFs |
-| 🗂️ Organize | Custom folder structures |
-| 🧩 Format | Custom Jinja2 templates (Markdown, JSON, etc.) |
-| 🎯 Filter | By category, points, or solve status |
-| 🌐 Integrations | Works with CTFd, rCTF, GZCTF, HTB, EPT, Berg, CryptoHack, and pwnable.tw via [ctfbridge](https://github.com/bjornmorten/ctfbridge) |
+- 🔽 **Download all challenges** from supported CTFs  
+- 🗂️ **Organize challenges** with custom folder structures  
+- 🧩 **Format outputs** using Jinja2 templates (Markdown, JSON, etc.)  
+- 🎯 **Apply filters** by category, points, or solve status  
+- 🌐 **Integrations:** Works with CTFd, rCTF, GZCTF, HTB, EPT, Berg, CryptoHack, and pwnable.tw via [ctfbridge](https://github.com/bjornmorten/ctfbridge)
+
 
 ## 📦 Installation
 
