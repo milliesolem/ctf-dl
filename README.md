@@ -24,7 +24,7 @@
 - 🗂️ **Organize challenges** with custom folder structures  
 - 🧩 **Format outputs** using Jinja2 templates (Markdown, JSON, etc.)  
 - 🎯 **Apply filters** by category, points, or solve status  
-- 🌐 **Integrations:** Works with CTFd, rCTF, GZCTF, HTB, EPT, Berg, CryptoHack, and pwnable.tw via [ctfbridge](https://github.com/bjornmorten/ctfbridge)
+- 🌐 **Integrations:** Works with CTFd, rCTF, GZCTF, HTB, EPT, Berg, CryptoHack, pwnable.tw and pwnable.xyz via [ctfbridge](https://github.com/bjornmorten/ctfbridge)
 
 
 ## 📦 Installation
