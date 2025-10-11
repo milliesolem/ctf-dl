@@ -1,25 +1,17 @@
 import logging
 
-from rich.console import Console
+from ctfdl.common.console import console
 
 
 def setup_logging_with_rich(debug: bool = False):
-    import sys
-
     from rich.logging import RichHandler
 
-    level = logging.DEBUG if debug else logging.WARNING
+    level = logging.DEBUG if debug else logging.ERROR
 
     logging.basicConfig(
         level=level,
         format="%(message)s",
         datefmt="[%X]",
-        handlers=[
-            RichHandler(
-                rich_tracebacks=True,
-                markup=True,
-                console=Console(file=sys.stderr),
-            )
-        ],
+        handlers=[RichHandler(rich_tracebacks=True, markup=True, console=console)],
     )
     logging.getLogger("ctfdl").setLevel(level)

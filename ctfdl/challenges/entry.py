@@ -1,8 +1,5 @@
-import logging
 import tempfile
 from pathlib import Path
-
-from rich.console import Console
 
 from ctfdl.challenges.downloader import download_challenges
 from ctfdl.common.archiver import zip_output_folder
@@ -11,9 +8,6 @@ from ctfdl.core.config import ExportConfig
 from ctfdl.core.events import EventEmitter
 from ctfdl.rendering.context import TemplateEngineContext
 from ctfdl.ui.rich_handler import RichConsoleHandler
-
-console = Console()
-logger = logging.getLogger("ctfdl.entry")
 
 
 async def run_export(config: ExportConfig):

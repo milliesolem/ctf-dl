@@ -1,7 +1,6 @@
 import asyncio
 
 from ctfbridge.models.challenge import Challenge, ProgressData
-from rich.console import Console
 from rich.live import Live
 from rich.progress import Progress, ProgressColumn, SpinnerColumn, TextColumn
 from rich.progress_bar import ProgressBar
@@ -10,6 +9,7 @@ from rich.text import Text
 from rich.tree import Tree
 
 import ctfdl.ui.messages as console_utils
+from ctfdl.common.console import console
 from ctfdl.core.events import EventEmitter
 
 
@@ -36,7 +36,7 @@ class AdaptiveTimeColumn(ProgressColumn):
 
 class RichConsoleHandler:
     def __init__(self, emitter: EventEmitter):
-        self._console = Console()
+        self._console = console
         self._progress = Progress(
             SpinnerColumn(),
             TextColumn("[bold blue]{task.description}"),
@@ -188,12 +188,14 @@ class RichConsoleHandler:
     @handles("attachment_progress")
     async def on_attachment_progress(self, progress_data: ProgressData, challenge: Challenge):
         pd = progress_data
+        attachment_id = str(pd.attachment.download_info)
+
         async with self._lock:
             challenge_node_info = self._challenge_nodes.get(challenge.name)
             if not challenge_node_info:
                 return
             challenge_node = challenge_node_info["node"]
-            attachment_node = self._attachment_nodes.get(pd.attachment.url)
+            attachment_node = self._attachment_nodes.get(attachment_id)
 
             progress_bar = ProgressBar(
                 total=pd.total_bytes, completed=pd.downloaded_bytes, width=30
@@ -207,11 +209,11 @@ class RichConsoleHandler:
 
             if attachment_node is None:
                 new_node = challenge_node.add(grid)
-                self._attachment_nodes[pd.attachment.url] = new_node
+                self._attachment_nodes[attachment_id] = new_node
             else:
                 attachment_node.label = grid
 
             if pd.downloaded_bytes == pd.total_bytes:
                 if attachment_node and attachment_node in challenge_node.children:
                     challenge_node.children.remove(attachment_node)
-                self._attachment_nodes.pop(pd.attachment.url, None)
+                self._attachment_nodes.pop(attachment_id, None)

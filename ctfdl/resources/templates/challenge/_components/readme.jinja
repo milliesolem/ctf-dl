@@ -6,9 +6,9 @@ prettify: true
 
 **Category:** {{ challenge.category }}
 
+{% if challenge.value is not none %}
 **Points:** {{ challenge.value }}
-
-**Solved:** {{ "✅ Yes" if challenge.solved else "❌ No" }}
+{% endif %}
 
 ## Description
 

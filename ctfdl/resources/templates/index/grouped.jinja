@@ -8,11 +8,15 @@ prettify: true
 {% set grouped = {} %}
 {% for c in challenges %}{% set _ = grouped.setdefault(c.data.category, []).append(c) %}{% endfor %}
 
+{% set show_points = challenges | selectattr("data.value", "ne", None) | list | length > 0 %}
+
 {% for category, items in grouped.items() %}
 ## {{ category }}
-| Name | Points | Solved | Path |
-|------|--------|--------|------|
+
+| Name {% if show_points %}| Points {% endif %}| Path |
+|------{% if show_points %}|--------{% endif %}|------|
 {% for c in items %}
-| {{ c.data.name }} | {{ c.data.value }} | {{ "✅" if c.data.solved else "❌" }} | [Link]({{ c.path }}) |
+| {{ c.data.name }} {% if show_points %}| {{ c.data.value if c.data.value is not none else "" }} {% endif %}| [Link]({{ c.path }}) |
 {% endfor %}
+
 {% endfor %}

@@ -133,16 +133,16 @@ async def process_challenge(
         await emitter.emit("attachment_progress", progress_data=pd, challenge=chal)
 
     chal_folder.mkdir(parents=True, exist_ok=True)
-    template_engine.render_challenge(config.variant_name, chal, chal_folder)
     if not config.no_attachments and chal.attachments:
         files_dir = chal_folder / "files"
         files_dir.mkdir(exist_ok=True)
-        await client.attachments.download_all(
-            attachments=chal.attachments,
+        chal = await client.attachments.download_all(
+            chal,
             save_dir=str(files_dir),
             progress=progress_callback,
             concurrency=config.parallel,
         )
+    template_engine.render_challenge(config.variant_name, chal, chal_folder)
 
     await emitter.emit("challenge_downloaded", challenge=chal, updated=existed_before)
 
