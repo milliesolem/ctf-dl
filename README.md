@@ -23,7 +23,7 @@
 - 🔽 **Download all challenges** from supported CTFs  
 - 🎯 **Apply filters** by category, points, or solve status  
 - 🗂️ **Organize challenges** with customizable Jinja2 templates
-- 🌐 **Supports** CTFd, rCTF, GZCTF, HTB, EPT, Berg, CryptoHack, and pwnable.{tw,kr,xyz} via [ctfbridge](https://github.com/bjornmorten/ctfbridge)
+- 🌐 **Supports** CTFd, rCTF, GZCTF, HTB, EPT, Berg, CryptoHack, pwn.college, and pwnable.{tw,kr,xyz} via [ctfbridge](https://github.com/bjornmorten/ctfbridge)
 
 
 ## 📦 Installation
