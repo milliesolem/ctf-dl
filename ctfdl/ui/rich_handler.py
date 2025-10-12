@@ -87,6 +87,10 @@ class RichConsoleHandler:
 
     # ===== Download Lifecycle =====
 
+    @handles("fetch_start")
+    def on_fetch_start(self):
+        self._progress.update(self._main_task_id, description="Fetching challenge list")
+
     @handles("download_start")
     def on_download_start(self):
         self._progress.update(self._main_task_id, description="Downloading challenges")

@@ -90,10 +90,15 @@ async def download_challenges(config: ExportConfig, emitter: EventEmitter) -> tu
         async with sem:
             await process(chal)
 
-    await emitter.emit("download_start")
+    await emitter.emit("fetch_start")
 
     try:
+        started = False
         async for chal in challenges_iterator:
+            if not started:
+                await emitter.emit("download_start")
+                started = True
+
             challenge_count += 1
             task = asyncio.create_task(worker(chal))
             tasks.append(task)
