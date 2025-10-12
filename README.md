@@ -57,19 +57,19 @@ If the CTF platform requires authentication, provide either:
 # Download all challenges
 ctf-dl https://ctf.example.com
 
-# Download to a custom directory
-ctf-dl https://ctf.example.com --output /tmp/ctf
+# Specify output directory
+ctf-dl https://ctf.example.com -o example-ctf/
 
-# Only download Web and Crypto challenges
+# Filter by categories
 ctf-dl https://ctf.example.com --categories Web Crypto
 
-# Overwrite previously downloaded challenges
+# Overwrite existing challenges
 ctf-dl https://ctf.example.com --update
 
-# Download and zip output
+# Compress output
 ctf-dl https://ctf.example.com --zip
 
-# Save output as JSON
+# Use JSON output format
 ctf-dl https://ctf.example.com --output-format json
 
 # List available templates
@@ -82,7 +82,7 @@ ctf-dl --list-templates
 ```
 challenges/
 ├── README.md
-├── crypto/
+├── pwn/
 │   ├── rsa-beginner/
 │   │   ├── README.md
 │   │   └── files/
