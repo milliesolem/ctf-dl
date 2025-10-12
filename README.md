@@ -49,10 +49,6 @@ ctf-dl https://demo.ctfd.io -u user -p password
 
 ## 💡 Examples
 
-If the CTF platform requires authentication, provide either:
-- `--token YOUR_TOKEN`, or  
-- `--username USERNAME --password PASSWORD`  
-
 ```bash
 # Download all challenges
 ctf-dl https://ctf.example.com
