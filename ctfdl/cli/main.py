@@ -127,14 +127,14 @@ def cli(
         None,
         "--username",
         "-u",
-        help="Username for login",
+        help="Login username",
         rich_help_panel="Authentication",
     ),
     password: str | None = typer.Option(
         None,
         "--password",
         "-p",
-        help="Password for login",
+        help="Login password",
         rich_help_panel="Authentication",
     ),
     cookie: str | None = typer.Option(
