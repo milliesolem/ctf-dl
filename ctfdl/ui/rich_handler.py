@@ -85,6 +85,12 @@ class RichConsoleHandler:
             self._live.stop()
         console_utils.connection_failed(reason, console=self._console)
 
+    @handles("authentication_required")
+    def on_authentication_required(self):
+        if self._live.is_started:
+            self._live.stop()
+        console_utils.authentication_required(console=self._console)
+
     # ===== Download Lifecycle =====
 
     @handles("fetch_start")

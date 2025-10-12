@@ -42,7 +42,7 @@ async def download_challenges(config: ExportConfig, emitter: EventEmitter) -> tu
         )
         return False, []
     except LoginError:
-        await emitter.emit("connect_fail", reason="Invalid credentials or token")
+        await emitter.emit("connect_fail", reason="Authentication failed")
         return False, []
     except MissingAuthMethodError:
         await emitter.emit("connect_fail", reason="Invalid authentication type")
@@ -103,7 +103,7 @@ async def download_challenges(config: ExportConfig, emitter: EventEmitter) -> tu
             task = asyncio.create_task(worker(chal))
             tasks.append(task)
     except NotAuthenticatedError:
-        await emitter.emit("connect_fail", reason="Authentication required")
+        await emitter.emit("authentication_required")
         return False, []
 
     if challenge_count == 0:

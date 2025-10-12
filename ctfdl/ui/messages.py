@@ -43,6 +43,14 @@ def connection_failed(error_message: str, console: Console = _default_console):
     error(f"Connection failed: {error_message}")
 
 
+def authentication_required(console: Console = _default_console):
+    console.print("🔒 [bold red]Authentication required[/bold red]\n")
+    console.print("[yellow]Please provide authentication credentials.[/yellow]")
+    console.print("  [cyan]--token[/cyan] YOUR_TOKEN")
+    console.print("  or")
+    console.print("  [cyan]--username[/cyan] USERNAME [cyan]--password[/cyan] PASSWORD\n")
+
+
 def no_challenges_found(console: Console = _default_console):
     error("There are no challenges to download...", console)
 
