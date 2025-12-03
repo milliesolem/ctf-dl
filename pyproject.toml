@@ -19,7 +19,7 @@ classifiers = [
 ]
 
 dependencies = [
-  "ctfbridge @ git+https://github.com/milliesolem/ctfbridge.git",
+  "git+https://github.com/milliesolem/ctfbridge.git",
   "httpx>=0.28.0",
   "typer>=0.15.3",
   "rich>=14.0.0",
